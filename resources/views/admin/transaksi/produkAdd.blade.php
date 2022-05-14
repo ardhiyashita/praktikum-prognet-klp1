@@ -43,7 +43,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="mt-2">Price</label>
-                                        <input type="number" name="price" max="0" class="form-control mt-1 @error('price') is-invalid @enderror" value="{{ old('price') }}" >
+                                        <input type="number" name="price" min="0" class="form-control mt-1 @error('price') is-invalid @enderror" value="{{ old('price') }}" >
+                                        @error('price')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="mt-2">Stock</label>
+                                        <input type="number" name="stock" min="0" class="form-control mt-1 @error('price') is-invalid @enderror" value="{{ old('stock') }}" >
                                         @error('price')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

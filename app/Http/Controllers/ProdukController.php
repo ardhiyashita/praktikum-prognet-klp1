@@ -52,7 +52,8 @@ class ProdukController extends Controller
             'id_category'=>$request->category,
             'description' => $request->description,
             'product_rate' => $request->product_rate,
-            'weight' => '1'
+            'weight' => '1',
+            'stock'=>$request->stock
         ]);
         return redirect('admin/produk');
     }

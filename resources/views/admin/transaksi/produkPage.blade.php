@@ -22,6 +22,7 @@
                         <th>No</th>
                         <th>Nama</th>
                         <th>Price</th>
+                        <th>Stock</th>
                         <th>Deskripsi</th>
                         <th>Rating</th>
                         <th class="text-center">Action</th>
@@ -33,6 +34,7 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->product_name }}</td>
                             <td>Rp. {{ $item->price }}</td>
+                            <td>{{ $item->stock }}</td>
                             <td>{{ $item->description }}</td>
                             <td>{{ $item->product_rate }}/5</td>
                             <td class="text-center">
