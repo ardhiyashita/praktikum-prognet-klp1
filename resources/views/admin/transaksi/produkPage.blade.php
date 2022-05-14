@@ -4,87 +4,51 @@
 
 @section('content')
 <!-- <div class="dark"> -->
-<div class="container" style="width: auto;">
-    @foreach($produk as $item)
-    <section class="py-5">
-        <div class="container" style="display:flex; justify-content:space-between;">
-            <img class="box-produk" src="/img/{{{ $item->image_name }}}" alt="">
-                <div class="box-satu mb-3">
-                <img src="../img/rate.png" alt="">
-                    <div class="product-name">{{ $item->product_name }}</div>
-                    <div class="white-line"></div>
-                    <div class="price">Rp.{{ $item->price }},00</div>
-                    <div class="white-line"></div>
-                    <div class="box-dua">
-                        <div class="detail-box">
-                            <div class="roboto-hijau">Detail Produk</div>
-                            <div class="roboto-abu">Kondisi</div>
-                            <div class="roboto-abu">Berat</div>
-                            <div class="roboto-abu">Kategori</div>
+         <div class="card">
+                    <div class="card-header">
+                        <div class="pull-left">
+                            <strong>Daftar Produk</strong>
                         </div>
-                        <div class="detail-data">
-                            <div class="roboto-hijau">:</div>
-                            <div class="roboto-hitam">Baru</div>
-                            <div class="roboto-hitam">100gr</div>
-                            <a href="#" class="roboto-hijau">Snack</a>
+                        <div class="pull-right">
+                            <a href="{{  url('admin/produks') }}" class="btn btn-success btn-sm">
+                                <i class="fa fa-plus"></i> Add
+                            </a>
                         </div>
                     </div>
-                    <div class="white-line"></div>
-                    <div class="box-tiga">
-                        <div class="roboto-hijau">SayurBox | Fresh Vegetables Shops in Bali</div>
-                        <div class="roboto-hitam">Jln. Abiansemal XXVI No. 231, Badung, 80352</div>
-                    </div>
-                </div>
-
-            <div class="box-transaction">
-                <div class="box-empat mb-3 p-2">
-                    <div class="product-name mb-2" style="color: #328831; font-weight: bold;">Atur Jumlah Pembelian</div>
-                    <form action="">
-                        <div style="justify-content: space-around;">
-                            <div class="box-dua">
-                                <div class="col mt-2">
-                                    <input type="number" placeholder="100" value=""
-                                        class="form-control ps-0 form-control-line" name="stok" 
-                                        id="stok">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                
-                <button class="btn btn-outline-success tombol">Add to Cart</button>
-                <a class="btn btn-outline-success tombol" href="{{ route('transaksi-page') }}">Order Now</a>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="box-ulasan">
-                <div class="product-name">ULASAN</div>
-                <div class="white-line"></div>
-                <div class="box-lima">
-                    <div class="profile-photo"></div>
-                    <div class="roboto-hijau">Nama Pengguna
-                        <div class="roboto-hitam">Lorem ipsum dolor sit amet</div>
-                    </div>
-                </div>
-                <div class="box-lima">
-                    <div class="profile-photo"></div>
-                    <div class="roboto-hijau">Nama Pengguna
-                        <div class="roboto-hitam">Lorem ipsum dolor sit amet</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </section>
-    @endforeach
-    </div>
-
-    <script>
-        function tambah() {
-            var angka = document.getElementById('jumlah-barang').value;
-            document.getElementById("jumlah-barang").value = angka + document.getElementById('jumlah-barang').value;
-            console.log(angka);
-        }
-    </script>
-@endsection
+            <div class="card-body table-responsive">
+                     <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Price</th>
+                        <th>Deskripsi</th>
+                        <th>Rating</th>
+                        <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($produk as $item)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item->product_name }}</td>
+                            <td>Rp. {{ $item->price }}</td>
+                            <td>{{ $item->description }}</td>
+                            <td>{{ $item->product_rate }}/5</td>
+                            <td class="text-center">
+                                <a href="{{ url('admin/produk/edit/'.$item->id) }}" class="btn btn-primary btn-sm">
+                                    <p>Edit</p>
+                                </a>
+                                <form action="{{ url('admin/produk/'.$item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus Data?')">
+                                    @method('delete')
+                                    @csrf
+                                    <button class="btn btn-danger btn-sm">
+                                        <p>Hapus</p>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+    @endsection

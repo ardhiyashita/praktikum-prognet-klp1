@@ -22,9 +22,10 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
       <script src="scripts/config.js" defer></script>
-        
+
     </head>
     <body><!-- Navigation-->
+        <div class="wrapper ">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="#!">Start Bootstrap</a>
@@ -50,7 +51,7 @@
                             <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
                         </button>
                     </form>
-                    
+
                     <form action="{{ route('login') }}" method="get">
                         @csrf
                         <button class="ml-2 btn btn-outline-dark" type="submit">Login
@@ -78,6 +79,6 @@
         <script src="{{ asset('assets/js/scripts.js') }}"></script>
         <script src="{{ asset('assets/js/cart.js') }}"></script>
         @include('sweetalert::alert')
-
+        </div>
     </body>
 </html>
