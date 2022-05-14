@@ -30,7 +30,7 @@
                     <tbody>
                         @foreach ($kurir as $item)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $loop->index+1+($kurir->currentPage()-1)*5 }}</td>
                             <td>{{ $item->courier }}</td>
                             <td class="text-center">
                                 <a href="{{  url('admin/courier/edit/'.$item->id) }}" class="btn btn-primary btn-sm">
@@ -48,6 +48,18 @@
                         @endforeach
                     </tbody>
                   </table>
+                  <div class="mt-4 text-center">
+                            Showing 
+                            {{ $kurir->firstItem() }}
+                            To
+                            {{ $kurir->lastItem() }}
+                            Of
+                            {{ $kurir->total() }}
+                        </div>
+                        <div>
+                            {{ $kurir->links() }}
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

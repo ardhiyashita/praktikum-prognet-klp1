@@ -21,6 +21,7 @@
                         <tr>
                         <th>No</th>
                         <th>Nama</th>
+                        <th>Category</th>
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Deskripsi</th>
@@ -31,8 +32,9 @@
                     <tbody>
                         @foreach ($produk as $item)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $loop->index+1+($produk->currentPage()-1)*5 }}</td>
                             <td>{{ $item->product_name }}</td>
+                            <td>{{ $item->category_name }}</td>
                             <td>Rp. {{ $item->price }}</td>
                             <td>{{ $item->stock }}</td>
                             <td>{{ $item->description }}</td>
@@ -53,4 +55,16 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="mt-4 text-center">
+                        Showing 
+                        {{ $produk->firstItem() }}
+                        To
+                        {{ $produk->lastItem() }}
+                        Of
+                        {{ $produk->total() }}
+                    </div>
+                    <div>
+                        {{ $produk->links() }}
+                    </div>
+                </div>
     @endsection

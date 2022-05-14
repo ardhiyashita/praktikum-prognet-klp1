@@ -30,7 +30,7 @@
                     <tbody>
                         @foreach ($kategori as $item)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $loop->index+1+($kategori->currentPage()-1)*5  }}</td>
                             <td>{{ $item->category_name }}</td>
                             <td class="text-center">
                                 <a href="{{  url('admin/kategori/edit/'.$item->id) }}" class="btn btn-primary btn-sm">
@@ -48,6 +48,18 @@
                         @endforeach
                     </tbody>
                   </table>
+                <div class="mt-4 text-center">
+                            Showing 
+                            {{ $kategori->firstItem() }}
+                            To
+                            {{ $kategori->lastItem() }}
+                            Of
+                            {{ $kategori->total() }}
+                        </div>
+                        <div>
+                            {{ $kategori->links() }}
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>
@@ -57,14 +69,4 @@
         </div>
     </div>
     @endsection
- {{-- <div class="card-body ">
-                 <form action="{{ url('daerah') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                    <label>Nama Kategori</label>
-                    <input type="text" name="category_name" class="form-control @error('category_name') is-invalid @enderror" value="{{ old('category_name') }}" autofocus>
-                        @error('category_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    <button type="submit" class="btn btn-success">Simpan</button>
-              </div> --}}
+}

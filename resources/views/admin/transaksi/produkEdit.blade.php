@@ -33,6 +33,17 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
+                                        <label class="mt-2">Nama kategori</label>
+                                        <select type="select"  id="category" name="category" class="form-control mt-1 @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" id="category" name="category" autofocus>
+                                        @foreach ($category as $c)
+                                            <option value="{{$c->id}}" >{{$c->category_name}}</option>
+                                        @endforeach
+                                        </select>
+                                        @error('product_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
                                         <label class="mt-2">Price</label>
                                         <input type="number" name="price" min="0" class="form-control @error('price') is-invalid @enderror mt-1"  value="{{ old('price', $produk->price) }}" >
                                         @error('price')
@@ -41,7 +52,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="mt-2">Stock</label>
-                                        <input type="number" name="price" min="0" class="form-control @error('price') is-invalid @enderror mt-1"  value="{{ old('stock', $produk->stock) }}" >
+                                        <input type="number" name="stock" min="0" class="form-control @error('price') is-invalid @enderror mt-1"  value="{{ old('stock', $produk->stock) }}" >
                                         @error('stock')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

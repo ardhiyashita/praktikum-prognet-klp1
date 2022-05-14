@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class CourierController extends Controller
 {
     public function index(){
-        $kurir = Courier::all();
+        $kurir = Courier::latest()->paginate(5);
         return view('admin.transaksi.courier', compact('kurir'));
     }
 

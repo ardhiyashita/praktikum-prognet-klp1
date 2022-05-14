@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class CategoryController extends Controller
 {
      public function index(){
-        $kategori = ProductCategory::all();
+        $kategori = ProductCategory::latest()->paginate(5);
         return view('admin.transaksi.category', compact('kategori'));
     }
 
