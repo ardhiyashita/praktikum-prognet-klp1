@@ -13,7 +13,7 @@
                         </div>
                         <div class="pull-right">
                             <a href="{{  url('admin/produk') }}" class="btn btn-primary btn-sm">
-                                <i class="fa fa-undo"></i> back
+                                <i class="fa fa-undo"></i> Back
                             </a>
                         </div>
                     </div>
@@ -23,15 +23,15 @@
                                 <form action="{{  url('admin/produk') }}" method="POST">
                                     @csrf
                                     <div class="form-group">
-                                        <label>Nama Produk</label>
-                                        <input type="text" name="product_name" class="form-control @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" autofocus>
+                                        <label  class="mt-2">Nama Produk</label>
+                                        <input type="text" name="product_name" class="form-control mt-1 @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" autofocus>
                                         @error('product_name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>Nama kategori</label>
-                                        <select type="select"  id="category" name="category" class="form-control @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" id="category" name="category" autofocus>
+                                        <label class="mt-2">Nama kategori</label>
+                                        <select type="select"  id="category" name="category" class="form-control mt-1 @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" id="category" name="category" autofocus>
                                         @foreach ($category as $c)
                                             <option value="{{$c->id}}" >{{$c->category_name}}</option>
                                         @endforeach
@@ -42,27 +42,27 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>Price</label>
-                                        <input type="number" name="price" max="0" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}" >
+                                        <label class="mt-2">Price</label>
+                                        <input type="number" name="price" max="0" class="form-control mt-1 @error('price') is-invalid @enderror" value="{{ old('price') }}" >
                                         @error('price')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                      <div class="form-group">
-                                        <label>Deskripsi</label>
-                                        <input type="text" name="description" class="form-control @error('description') is-invalid @enderror" value="{{ old('description') }}" >
+                                        <label  class="mt-2">Deskripsi</label>
+                                        <input type="text" name="description" class="form-control mt-1 @error('description') is-invalid @enderror" value="{{ old('description') }}" >
                                         @error('description')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>Rating</label>
-                                        <input type="number" name="product_rate" min="0" max="5" class="form-control @error('product_rate') is-invalid @enderror" value="{{ old('product_rate') }}">
+                                        <label  class="mt-2">Rating</label>
+                                        <input type="number" name="product_rate" min="0" max="5" class="form-control mt-1 @error('product_rate') is-invalid @enderror" value="{{ old('product_rate') }}">
                                         @error('product_rate')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                    <button type="submit" class="btn btn-success  mt-2 mb-2">Simpan</button>
                                 </form>
                             </div>
                         </div>

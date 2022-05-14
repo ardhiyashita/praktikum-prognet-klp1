@@ -25,7 +25,7 @@ class CourierController extends Controller
         DB::table('couriers')->insert([
             'courier' => $request->courier,
         ]);
-        
+
         return redirect('admin/courier');
     }
 

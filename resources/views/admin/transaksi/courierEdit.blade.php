@@ -15,7 +15,7 @@
                         </div>
                         <div class="pull-right">
                             <a href="{{  url('admin/courier') }}" class="btn btn-primary btn-sm">
-                                <i class="fa fa-undo"></i> back
+                                <i class="fa fa-undo"></i> Back
                             </a>
                         </div>
                     </div>
@@ -25,14 +25,14 @@
                                 <form action="{{  url('admin/courier/'.$courier->id) }}" method="POST">
                                     @method('patch')
                                     @csrf
-                                    <div class="form-group">
+                                    <div class="form-group mt-2">
                                         <label>Nama Kurir</label>
-                                        <input type="text" name="courier" class="form-control @error('courier') is-invalid @enderror" value="{{ old('courier', $courier->courier) }}" autofocus>
+                                        <input type="text" name="courier" class="form-control mt-1 @error('courier') is-invalid @enderror" value="{{ old('courier', $courier->courier) }}" autofocus>
                                         @error('courier')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                    <button type="submit" class="btn btn-success mt-2 mt-2">Simpan</button>
                                 </form>
                             </div>
                         </div>

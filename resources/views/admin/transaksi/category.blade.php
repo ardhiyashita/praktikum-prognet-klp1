@@ -36,8 +36,6 @@
                                 <a href="{{  url('admin/kategori/edit/'.$item->id) }}" class="btn btn-primary btn-sm">
                                     <p>Edit</p>
                                 </a>
-                            </td>
-                            <td>
                                 <form action="{{ url('admin/kategori/'.$item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus Data?')">
                                     @method('delete')
                                     @csrf
