@@ -29,13 +29,14 @@ class ProdukController extends Controller
         //$produk = Product::latest()->paginate(5);
         $produk= DB::Table('products')->join('product_categories','products.id_category','=','product_categories.id')
         ->select('products.*','product_categories.category_name')->orderBy('products.created_at')->paginate(5);        
-        return view('admin.transaksi.produkPage', compact('produk'));
+        return view('produk.produkPage', compact('produk'));
+        // return view('admin.transaksi.produkPage', compact('produk'));
     }
 
     public function add(){
      
         $category= DB::Table('product_categories')->get();
-        return view('admin.transaksi.produkAdd',compact('category'));
+        return view('produk.produkAddPage',compact('category'));
     }
 
     public function create(Request $request){
@@ -78,7 +79,7 @@ class ProdukController extends Controller
     {
         $category= DB::Table('product_categories')->get();
         $produk = DB::table('products')->where('id', $id)->first();
-        return view('admin.transaksi.produkEdit', compact('produk','category'));
+        return view('produk.produkEditPage', compact('produk','category'));
     }
 
     public function editprocess(Request $request, $id){

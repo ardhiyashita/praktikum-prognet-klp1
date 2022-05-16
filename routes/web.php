@@ -75,7 +75,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
 
             Route::get('/produk', [ProdukController::class, 'index']);
             Route::get('/produks', [ProdukController::class, 'add']);
-            Route::post('/produk', [ProdukController::class, 'create']);
+            Route::post('/product', [ProdukController::class, 'create']);
             Route::get('/produk/edit/{id}', [ProdukController::class, 'edit']);
             Route::patch('/produk/{id}', [ProdukController::class, 'editprocess']);
             Route::delete('/produk/{id}', [ProdukController::class, 'delete']);
