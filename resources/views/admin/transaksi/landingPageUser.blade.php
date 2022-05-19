@@ -1,9 +1,9 @@
-@extends('layouts.navigation')
+@extends('layouts.navigationUser')
 
-@section('title', 'Landing Page')
+@section('title', 'Landing Page User')
 
 @section('content')
-<form action="{{ route('user.login') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('cart-insert') }}" method="POST" enctype="multipart/form-data">
     @csrf
         <!-- Header-->
         <header class="bg-dark py-5">
@@ -66,7 +66,7 @@
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center" style="display:flex; justify-content:space-around ">
                                     <a class="btn btn-outline-dark mt-auto" href="{{ route('produk-page', $item->id) }}">View</a>
-                                    <a class="btn btn-outline-dark mt-auto" href="{{ route('user.login') }}">Add to Cart</a>
+                                    <button class="btn btn-outline-dark mt-auto" type="submit">Add to Cart</a>
                                     <input type="hidden" value="{{ $item->id }}" name='id'>
                                 </div>
                             </div>

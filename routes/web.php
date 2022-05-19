@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\User;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
@@ -98,6 +99,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
         });
 
 });
+
 
 
 

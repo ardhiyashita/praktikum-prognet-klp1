@@ -4,11 +4,11 @@
 <div class="row justify-content-center" style="padding-top:200px">
     <div class="col-lg-4">
         <div class="card" style="width:30rem">
-            <center><h3 style="margin:10px">Admin Login</h3></center>
+            <center><h3 style="margin:10px">User Login</h3></center>
             <div class="card-body" style="height:20rem">
                 <div class="row">
                     <div class="col-lg-6">
-                        <form action="{{ route('admin.login_proses') }}" class="form-group mt-3" style="padding-left:60px" method="post">
+                        <form action="{{ route('user.login_proses') }}" class="form-group mt-3" style="padding-left:60px" method="post">
                             @csrf
                             <div style="width: 300px">                    
                                 <label>Email</label>
@@ -24,7 +24,7 @@
                         </form>
                     </div>
                      {{-- <div class="col-lg-3">
-                        <p style="padding-left: 50px; padding-top:100px"><a href="">Register</a></p>
+                        <p style="padding-left: 50px; padding-top: 100px"><a href="">Register</a></p>
                      <img src="foto/Screenshot (72).png" style="padding-left:150px" width="460px" height="300px" alt="gambar"> 
                     </div>  --}}
                 </div>

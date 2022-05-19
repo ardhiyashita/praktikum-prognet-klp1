@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class TransaksiController extends Controller
 {
     //
-    public function landingPage()
+    public function landing()
     {
         $produk = DB::table('products')
             ->join('product_images', 'products.id', '=', 'product_id')
@@ -26,6 +26,23 @@ class TransaksiController extends Controller
         //     // dd($rate);
 
         return view('admin.transaksi.landingPage', compact('produk'));
+    }
+
+    public function landingPage()
+    {
+        $produk = DB::table('products')
+            ->join('product_images', 'products.id', '=', 'product_id')
+            ->select('products.*', 'product_images.image_name')
+            ->get();
+
+        // $star = DB::table('products')
+        //     ->select('products.product_rate')
+        //     ->get();
+        // $rate = array($star);
+
+        //     // dd($rate);
+
+        return view('admin.transaksi.landingPageUser', compact('produk'));
     }
 
     public function produkPage($id) 
