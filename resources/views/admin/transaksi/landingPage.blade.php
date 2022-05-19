@@ -10,7 +10,7 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
                     <h1 class="display-4 fw-bolder">Let's Eat Vegetables</h1>
-                    <a href="{{ url('admin/produk') }}">
+                    <!-- <a href="{{ url('admin/produk') }}">
                     <p>Produk</p>
                     </a>
                     <a href="{{ url('admin/kategori') }}">
@@ -18,7 +18,7 @@
                     </a>
                     <a href="{{ url('admin/courier') }}">
                     <p>Kurir</p>
-                    </a>
+                    </a> -->
                     <p class="lead fw-normal text-white-50 mb-0">get healthy life with us</p>
                 </div>
             </div>
