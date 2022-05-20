@@ -1,4 +1,4 @@
-@extends('layouts.navigationUser')
+@extends('layouts.navigation')
 
 @section('title', 'Landing Page User')
 
