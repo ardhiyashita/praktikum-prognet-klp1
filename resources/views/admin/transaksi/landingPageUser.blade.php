@@ -3,8 +3,6 @@
 @section('title', 'Landing Page User')
 
 @section('content')
-<form action="{{ route('cart-insert') }}" method="POST" enctype="multipart/form-data">
-    @csrf
         <!-- Header-->
         <header class="bg-dark py-5">
             <div class="container px-4 px-lg-5 my-5">
@@ -32,11 +30,20 @@
         </div>
         @endif
 
+        @if(session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
         <!-- Section-->
         <section class="py-5">
             <div class="container mt-5" style="width: auto;">
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                 @foreach($produk as $item)
+                <form action="{{ route('tambah-keranjang', $item->id) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Sale badge-->
@@ -67,11 +74,12 @@
                                 <div class="text-center" style="display:flex; justify-content:space-around ">
                                     <a class="btn btn-outline-dark mt-auto" href="{{ route('produk-page', $item->id) }}">View</a>
                                     <button class="btn btn-outline-dark mt-auto" type="submit">Add to Cart</a>
-                                    <input type="hidden" value="{{ $item->id }}" name='id'>
+                                    <!-- <input type="hidden" value="{{ $item->id }}" name='id'> -->
                                 </div>
                             </div>
                         </div>
                     </div>
+                    </form>
                     @endforeach
                 </div>
             </div>

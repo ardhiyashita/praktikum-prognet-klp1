@@ -32,7 +32,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('landing-page-user') }}">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
@@ -80,14 +80,7 @@
                     <form class="d-flex">
                         <button class="btn btn-outline-dark" type="submit">
                             <i class="bi-cart-fill me-1"></i>                            
-                                <a href="{{ route('cart-page') }}">cart</a>
-                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                        </button>
-                    </form>
-
-                    <form action="{{ route('login') }}" method="get">
-                        @csrf
-                        <button class="ml-2 btn btn-outline-dark" type="submit">Logins
+                                <a href="{{ route('keranjang') }}" style="text-decoration:none; color:black;">Cart</a>
                         </button>
                     </form>
 
@@ -96,6 +89,11 @@
                         <button class="ml-2 btn btn-outline-dark" type="submit">Logout
                         </button>
                     </form>
+
+                    <button class="btn btn-outline-dark" type="submit">
+                        <a href="{{ route('status-transaksi-page') }}" style="text-decoration:none; color:black;">User</a>
+                    </button>
+
                 </div>
             </div>
         </nav>
@@ -109,7 +107,7 @@
 
             <!-- Footer-->
                 <footer class="py-5 bg-dark">
-                    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2021</p></div>
+                    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Prognet Kelompok 1 Website 2021</p></div>
                 </footer>
             <!-- Bootstrap core JS-->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

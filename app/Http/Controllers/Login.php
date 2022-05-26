@@ -54,7 +54,7 @@ class Login extends Controller
 
         $check= $request->only('email','password');
         if(Auth::guard('web')->attempt($check)){
-            return redirect()->route('home')->with('success','Login Success');
+            return redirect()->route('landing-page-user')->with('success','Login Success');
         }else{
             return redirect()->back()->with('erorr','Login Failed');
         }
