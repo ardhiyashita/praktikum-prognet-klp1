@@ -526,7 +526,6 @@ class TransaksiController extends Controller
                 "key: 400f496a78d8de8e403cb03633e42774"
             ),
         ));
-        
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
