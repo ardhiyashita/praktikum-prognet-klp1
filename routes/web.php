@@ -11,7 +11,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProdukController;
-use App\Http\Controllers\User;
+// use App\Http\Controllers\User;
+use App\Http\Controllers\DiskonController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
@@ -133,6 +134,13 @@ Route::prefix('admin')->name('admin.')->group(function(){
             Route::get('/adm/transaksi/detail/{id}', [AdmTransaksiController::class, 'transaksi_detail'])->name('adm-transaksi-detail');
             Route::post('/adm/transaksi/status/{id}', [AdmTransaksiController::class, 'transaksi_status'])->name('adm-transaksi-status');
             Route::get('/adm/transaksi/bukti/{id}', [AdmTransaksiController::class, 'transaksi_bukti'])->name('adm-transaksi-bukti');
+            
+            Route::get('/diskon', [DiskonController::class, 'index']);
+            Route::get('/diskon-add', [DiskonController::class, 'add']);
+            Route::post('/diskon', [DiskonController::class, 'create']);
+            Route::get('/diskon/edit/{id}', [DiskonController::class, 'edit']);
+            Route::patch('/diskon/{id}', [DiskonController::class, 'editprocess']);
+            Route::delete('/diskon/{id}', [DiskonController::class, 'delete']);
 
         });
 
