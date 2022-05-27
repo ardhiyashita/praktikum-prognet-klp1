@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\DiskonController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
@@ -94,6 +95,12 @@ Route::prefix('admin')->name('admin.')->group(function(){
             Route::patch('/courier/{id}', [CourierController::class, 'editprocess']);
             Route::delete('/courier/{id}', [CourierController::class, 'delete']);
 
+            Route::get('/diskon', [DiskonController::class, 'index']);
+            Route::get('/diskon-add', [DiskonController::class, 'add']);
+            Route::post('/diskon', [DiskonController::class, 'create']);
+            Route::get('/diskon/edit/{id}', [DiskonController::class, 'edit']);
+            Route::patch('/diskon/{id}', [DiskonController::class, 'editprocess']);
+            Route::delete('/diskon/{id}', [DiskonController::class, 'delete']);
 
         });
 

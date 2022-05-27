@@ -52,7 +52,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="mt-2">Stock</label>
-                                        <input type="number" name="stock" min="0" class="form-control @error('price') is-invalid @enderror mt-1"  value="{{ old('stock', $produk->stock) }}" >
+                                        <input type="number" name="stock" min="0" class="form-control @error('stock') is-invalid @enderror mt-1"  value="{{ old('stock', $produk->stock) }}" >
                                         @error('stock')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
