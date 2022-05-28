@@ -1,4 +1,4 @@
-@extends('layouts.navigation')
+@extends('produk.mainProduk')
 
 @section('title', 'Diskon Page')
 
@@ -30,9 +30,9 @@
                         @foreach ($diskon as $item)
                         <tr>
                             <td>{{ $loop->index+1+($diskon->currentPage()-1)*5 }}</td>
-                            <td>{{ $item->product_name }}</td>
+                            <td>{{ $item->product->product_name }}</td>
                             <td>{{ $item->percentage }}%</td>
-                            <td>Rp. {{ $item->start }}</td>
+                            <td>{{ $item->start }}</td>
                             <td>{{ $item->end }}</td>
                             <td class="text-center">
                                 <a href="{{ url('admin/diskon/edit/'.$item->id) }}" class="btn btn-primary btn-sm">

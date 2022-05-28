@@ -29,14 +29,14 @@
                         <div class="row">
 
                             <div class="col-5">
-                                <h6 class="card-subtitle mb-2 text-muted">Total Harga</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Produk</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Harga</h6>
                                 <h6 class="card-subtitle mb-2 text-muted">Ongkir</h6>
                             </div>
                             <div class="col-7">
                                 <div class="form-inline">
-                                    @foreach($transaction_detail as $transaction_details)
+                                    <h6 class="card-subtitle mb-2 text-muted">{{$transaction_details->product->product_name}}</h6>
                                     <h6 class="card-subtitle mb-2 text-muted">{{$transaction_details->selling_price}}</h6>
-                                    @endforeach
                                     <h6 class="card-subtitle mb-2 text-muted">{{$transaction->shipping_cost}}</h6>
                                 </div>
                             </div>
@@ -62,47 +62,49 @@
                             <h4 class="">{{$transaction->status}}</h4>
                         </div>
 
-                        @auth('web')
-                        @if($transaction->status == "menunggu bukti pembayaran" or $transaction->status == "transaksi tidak terverifikasi" )
+                        @if($transaction->status == "menunggu bukti pembayaran")
                         <div class="row">
                             <div class="progress-container mb-4">
-                                <div class="white-line">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 100%;">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col">
-                                <!-- <h6 class="card-subtitle mb-2 text-muted">Countdown&nbsp;:</h6> -->
-                                <h6 class="card-subtitle mb-2 text-muted" id="countdown"></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Countdown&nbsp;:</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">{{$interval}}</h6>
                             </div>
                         </div>
-
-                        <form method="post" action="{{route('transaksi-bukti', $transaction->id)}}"
+                        @else
+                        <form class="d-grid" method="post"
+                            action="{{route('admin.adm-transaksi-status', $transaction->id)}}"
                             enctype="multipart/form-data">
                             @csrf
-                            <div class="d-grid">
-                                <div class="mb-3">
-                                    <label for="formFile" class="form-label">Upload Bukti Pembayaran</label>
-                                    <input class="form-control @error('proof_of_payment') is-invalid @enderror"
-                                        type="file" name="proof_of_payment" required>
-                                    @error('proof_of_payment')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                                <button type="submit" class="btn btn-success" readonly>Upload</button>
+                            <div class="form-group">
+                                <label>Ubah Status</label>
+                                <select class="form-control" name="status" required>
+                                    <option selected value="">Pilih Status</option>
+                                    <option value="menunggu verifikasi">Menunggu Verifikasi</option>
+                                    <option value="sudah terverifikasi">Sudah Terverifikasi</option>
+                                    <option value="transaksi tidak terverifikasi">Transaksi Tidak Terverifikasi</option>
+                                    <option value="transaksi dibatalkan">Transaksi Dibatalkan</option>
+                                    <option value="barang dalam pengiriman">Barang Dalam Pengiriman</option>
+                                    <option value="barang telah sampai di tujuan">Barang Telah Sampai Di Tujuan</option>
+                                </select>
                             </div>
+                            <br><br>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
                         </form>
-
-                        <form method="post" action="{{route('transaksi-batal', $transaction->id)}}"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-danger">Batal</button>
-                            </div>
-                        </form>
+                        <div class="progress-container mb-4">
+                        </div>
+                        <div class="d-grid">
+                            <a type="button" class="btn btn-info text-white"
+                                href="{{route('admin.adm-transaksi-bukti', $transaction->id)}}">Lihat Bukti
+                                Pembayaran</a>
+                            <a href="{{url('proof_of_payment/'. $transaction->proof_of_payment)}}" type="button"
+                                class="btn btn-outline-primary" download>Unduh Bukti Pembayaran</a>
+                        </div>
                         @endif
-                        @endauth
-
                     </div>
                 </div>
             </div>
@@ -110,35 +112,4 @@
     </section>
     <!--Section: Design Block-->
 </div>
-
-<script>
-    CountDownTimer('{{ $transaction->created_at }}', 'countdown');
-    function CountDownTimer(dt, id)
-    {
-        var end = new Date('{{ $transaction->timeout }}');
-        var _second = 1000;
-        var _minute = _second * 60;
-        var _hour = _minute * 60;
-        var _day = _hour * 24;
-        var timer;
-        function showRemaining() {
-        var now = new Date();
-        var distance = end - now;
-        if (distance < 0) {
-        clearInterval(timer);
-        return;
-        }
-        var days = Math.floor(distance / _day);
-        var hours = Math.floor((distance % _day) / _hour);
-        var minutes = Math.floor((distance % _hour) / _minute);
-        var seconds = Math.floor((distance % _minute) / _second);
-        document.getElementById(id).innerHTML = days + ' day ';
-        document.getElementById(id).innerHTML += hours + ' hours ';
-        document.getElementById(id).innerHTML += minutes + ' minutes ';
-        document.getElementById(id).innerHTML += seconds + ' secs ';
-    }
-    timer = setInterval(showRemaining, 1000);
-    }
-</script>
-
 @endsection

@@ -46,8 +46,12 @@
                     @csrf
                     <div class="col mb-5">
                         <div class="card h-100">
-                            <!-- Sale badge-->
+                        @if($item->percentage == 0)                            
                             <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                        @else
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 6rem">Sale</div>
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Diskon {{ $item->percentage }}%</div>
+                        @endif
                             <!-- Product image-->
                             <img class="card-img-top" src="../img/{{ $item->image_name }}" alt="..." />
                             <!-- Product details-->

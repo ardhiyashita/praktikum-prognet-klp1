@@ -32,20 +32,28 @@
                 <img src="../img/rate.png" alt="">
                     <div class="product-name">{{ $item->product_name }}</div>
                     <div class="white-line"></div>
-                    <div class="price">Rp.{{ $item->price }},00</div>
+                    <div class="price">Rp.{{ $harga }},00</div>
                     <div class="white-line"></div>
                     <div class="box-dua">
                         <div class="detail-box">
                             <div class="roboto-hijau">Detail Produk</div>
+                            <div class="roboto-abu">Diskon</div>
+                            <div class="roboto-abu">Harga Awal</div>
                             <div class="roboto-abu">Kondisi</div>
-                            <div class="roboto-abu">Berat</div>
-                            <div class="roboto-abu">Kategori</div>
                         </div>
                         <div class="detail-data">
                             <div class="roboto-hijau">:</div>
-                            <div class="roboto-hitam">Baru</div>
-                            <div class="roboto-hitam">100gr</div>
-                            <a href="#" class="roboto-hijau">Snack</a>
+                            <div class="roboto-hitam">
+                                @foreach ($discount as $discounts)
+                                    @if($discounts->percentage == 0)
+                                        Tidak ada diskon
+                                    @else
+                                        {{ $discounts->percentage }}%
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="roboto-hitam">Rp.{{ $item->price }},00</div>
+                            <a href="#" class="roboto-hijau">Fresh</a>
                         </div>
                     </div>
                     <div class="white-line"></div>
@@ -58,18 +66,16 @@
             <div class="box-transaction">
                 <div class="box-empat mb-3 p-2">
                     <div class="product-name mb-2" style="color: #328831; font-weight: bold;">Atur Jumlah Pembelian</div>
-                    <form action="">
                         <div style="justify-content: space-around;">
                             <div class="box-dua">
                                 <div class="col mt-2">
-                                    <input type="number" placeholder="1" value="1"
+                                    <input type="number" placeholder="1" value=""
                                         class="form-control ps-0 form-control-line" name="jumlah_beli" 
                                         id="stok">
                                 </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
                <!-- <a class="btn btn-outline-success tombol" href="{{ route('transaksi-page') }}">Order Now</a> -->
                 
                 <button class="btn btn-outline-success tombol" type="submit">Order Now</a>
@@ -89,26 +95,26 @@
             <div class="box-ulasan">
                 <div class="product-name">ULASAN</div>
                 <div class="white-line"></div>
-                <div class="box-lima">
-                    <div class="profile-photo"></div>
-                    <div class="roboto-hijau">Nama Pengguna
-                        <div class="roboto-hitam">Lorem ipsum dolor sit amet</div>
-                    </div>
-                </div>
-                <div class="box-lima">
-                    <div class="profile-photo"></div>
-                    <div class="roboto-hijau">Nama Pengguna
-                        <div class="roboto-hitam">Lorem ipsum dolor sit amet</div>
-                    </div>
-                </div>
+                @if($product_review)
+                    @foreach($product_review as $value)
+                        <div class="box-lima">
+                            <div class="profile-photo"></div>
+                            <div class="roboto-hijau"> {{ $value->user->name }}
+                                <div class="roboto-hitam">{{ $value->content }}</div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div>Tidak ada ulasan untuk produk ini</div>
+                @endif
             </div>
         </div>
     @endforeach
 
             @auth('admin')
                 <h6 class="card-subtitle text-muted mt-2 mb-1">Admin | {{Auth::guard('admin')->user()->name}}</h6>
-                @if(count($produk_review)>0)
-                    @foreach($produk_review as $value)
+                @if(count($product_review)>0)
+                    @foreach($product_review as $value)
                         <form class="form-inline" method="post" action="{{route('admin.adm-response-submit', $value->id)}}" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
@@ -123,7 +129,7 @@
                         </form>
                     @endforeach
                 @else
-                    <div></div>
+                    <div>Tidak ada ulasan untuk produk ini</div>
                 @endif
             @endauth
         

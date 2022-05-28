@@ -25,31 +25,32 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
+                                <h2>Kalkulasi harga</h2>
                                 @foreach($keranjang as $keranjangs)
                                 <div class="col-md-4">
                                     @php
                                     $gambar = App\Models\ProductImage::where('product_id', '=',
-                                    $keranjangs->product->id)->first();
+                                    $keranjangs->id)->first();
                                     $tanggal = Carbon\Carbon::now()->format('Y-m-d');
-                                    $harga = $keranjangs->product->price;
+                                    $harga = $keranjangs->price;
                                     @endphp
                                     <img src="{{url('img/'. $gambar->image_name)}}" class="rounded-3"
                                         style="width: 100px;" alt="Blue Jeans Jacket" />
                                 </div>
                                 <div class="col-md-6 ms-3">
-                                    <span class="mb-0 text-price">Rp.{{$harga}}</span>
+                                    <span class="mb-0 text-price">Rp.{{$selling_price[$loop->index]}}</span>
                                     <p class="mb-0 text-descriptions">
-                                        {{$keranjangs->product->product_name}}</p>
-                                    <p class="text-descriptions mt-0">Qty:<span
+                                        {{$keranjangs->product_name}}</p>
+                                    <p class="text-descriptions mt-0">Qty: <span
                                             class="text-descriptions fw-bold">{{$keranjangs->qty}}</span>
                                     </p>
-                                    <p class="text-descriptions mt-0">Subtotal<span
-                                            class="text-descriptions fw-bold">:{{$h = $harga * $keranjangs->qty}}</span>
+                                    <p class="text-descriptions mt-0">Subtotal: <span
+                                            class="text-descriptions fw-bold">{{$h = $selling_price[$loop->index] * $keranjangs->qty}}</span>
                                     </p>
                                 </div>
                                 @php
                                 $total_harga = $total_harga + $h;
-                                array_push($harga_jual,$harga);
+                                array_push($harga_jual,$selling_price[$loop->index]);
                                 $h =0
                                 @endphp
                                 <input type="number" class="form-control" value="{{$keranjangs->id}}" name="keranjang[]"
@@ -62,11 +63,6 @@
 
 
                             <div class="card-footer mt-4">
-                                <input type="number" class="form-control" value="{{$total_harga}}" name="subtotal"
-                                    hidden>
-                                <input type="number" class="form-control" value="{{$shipping_cost}}"
-                                    name="shipping_cost" hidden>
-                                <input type="number" class="form-control" value="{{$j}}" name="total" hidden>
                                 <ul class="list-group list-group-flush">
                                     <li
                                         class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0 text-muted">
@@ -84,6 +80,11 @@
                                         Total
                                         <span>{{$j = $total_harga + $shipping_cost }}</span>
                                     </li>
+                                    <input type="number" class="form-control" value="{{$total_harga}}" name="subtotal"
+                                        hidden>
+                                    <input type="number" class="form-control" value="{{$shipping_cost}}"
+                                        name="shipping_cost" hidden>
+                                    <input type="number" class="form-control" value="{{$j}}" name="total" hidden>
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary">Bayar</button>
                                     </div>

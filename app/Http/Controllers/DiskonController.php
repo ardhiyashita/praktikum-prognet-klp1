@@ -11,12 +11,12 @@ class DiskonController extends Controller
 {
     public function index(){
         $diskon = Discount::latest()->paginate(5);
-        return view('admin.transaksi.diskon', compact('diskon'));
+        return view('produk.diskon', compact('diskon'));
     }
 
     public function add(){
         $product = Product::get();
-        return view('admin.transaksi.diskonAdd',compact('product'));
+        return view('produk.diskonAdd',compact('product'));
     }
 
     public function create(Request $request){
@@ -26,8 +26,6 @@ class DiskonController extends Controller
             'start' => 'required',
             'end'=> 'required'
         ]);
-       
-
        
             DB::table('discounts')->insert([
                 'id_product' => $request->product,
@@ -43,7 +41,7 @@ class DiskonController extends Controller
     {
         $product=Product::all();
         $diskon = DB::table('discounts')->where('id', $id)->first();
-        return view('admin.transaksi.diskonEdit', compact('diskon','product'));
+        return view('produk.diskonEdit', compact('diskon','product'));
     }
 
     public function editprocess(Request $request, $id){

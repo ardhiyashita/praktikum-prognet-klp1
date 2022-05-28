@@ -1,9 +1,8 @@
-@extends('layouts.navigation')
+@extends('produk.mainProduk')
 
 @section('title', 'Produk Page')
 
 @section('content')
-
 <!-- <div class="dark"> -->
     <div class="content mt-3">
             <div class="animated fadeIn">
@@ -13,7 +12,7 @@
                             <strong>Tambah Diskon</strong>
                         </div>
                         <div class="pull-right">
-                            <a href="{{  url('admin/diskon') }}" class="btn btn-primary btn-sm">
+                            <a href="{{  url('admin/produk') }}" class="btn btn-primary btn-sm">
                                 <i class="fa fa-undo"></i> Back
                             </a>
                         </div>
@@ -21,7 +20,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 offset-md-4">
-                                <form action="{{  url('admin/diskon/'.$diskon->id) }}" method="POST">
+                                <form action="{{  url('admin/diskon') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group">
                                         <label  class="mt-2">Nama Produk</label>
@@ -36,14 +35,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="mt-2">Persentase Diskon</label>
-                                        <input type="number" name="persen" id="persen" value="{{$diskon->percentage}}" min='0' max='100' class="form-control mt-1 @error('persen') is-invalid @enderror" value="{{ old('persen') }}" autofocus>
+                                        <input type="number" name="persen" id="persen" min='0' max='100' class="form-control mt-1 @error('persen') is-invalid @enderror" value="{{ old('persen') }}" autofocus>
                                         @error('persen')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="form-group">
                                         <label class="mt-2">Start</label>
-                                        <input type="date" name="start" value ="{{$diskon->start}}" class="form-control mt-1 @error('start') is-invalid @enderror" value="{{ old('start') }}" >
+                                        <input type="date" name="start" class="form-control mt-1 @error('start') is-invalid @enderror" value="{{ old('start') }}" >
                                         @error('start')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -51,7 +50,7 @@
                                     
                                     <div class="form-group">
                                         <label class="mt-2">End</label>
-                                        <input type="date" name="end" value="{{$diskon->end}}" class="form-control mt-1 @error('end') is-invalid @enderror" value="{{ old('end') }}" >
+                                        <input type="date" name="end"  class="form-control mt-1 @error('end') is-invalid @enderror" value="{{ old('end') }}" >
                                         @error('end')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

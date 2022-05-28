@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\Cart;
 use App\Models\Courier;
+use App\Models\Discount;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductReview;
@@ -25,25 +26,12 @@ class TransaksiController extends Controller
     {
         $produk = DB::table('products')
             ->join('product_images', 'products.id', '=', 'product_id')
-            ->select('products.*', 'product_images.image_name')
+            ->join('discount', 'products.id', '=', 'product_id')
+            ->select('products.*', 'product_images.image_name', 'discounts.percentage')
             ->get();
 
-        // $star = DB::table('products')
-        //     ->select('products.product_rate')
-        //     ->get();
-        // $rate = array($star);
-
-        //     // dd($rate);
-
-        return view('admin.transaksi.landingPage', compact('produk'));
-    }
-
-    public function landingPage()
-    {
-        $produk = DB::table('products')
-            ->join('product_images', 'products.id', '=', 'product_id')
-            ->select('products.*', 'product_images.image_name')
-            ->get();
+        // $diskon = Discount::where('product_id', '=', $produk->id)->latest()->get();
+        // dd($diskon);
 
         // $star = DB::table('products')
         //     ->select('products.product_rate')
@@ -55,6 +43,24 @@ class TransaksiController extends Controller
         return view('admin.transaksi.landingPageUser', compact('produk'));
     }
 
+    public function landingPage()
+    {
+        $produk = DB::table('products')
+            ->join('product_images', 'products.id', '=', 'product_id')
+            ->join('discounts', 'products.id', '=', 'id_product')
+            ->select('products.*', 'product_images.image_name', 'discounts.percentage')                        
+            ->get();
+
+            // $star = DB::table('products')
+            //     ->select('products.product_rate')
+            //     ->get();
+            // $rate = array($star);
+    
+        // dd($diskon);
+    
+            return view('admin.transaksi.landingPageUser', compact('produk'));
+    }
+
     public function produkPage($id) 
     {
         $produk = DB::table('products')
@@ -62,10 +68,24 @@ class TransaksiController extends Controller
             ->select('products.*', 'product_images.image_name')
             ->where('products.id', '=', $id)
             ->get();
+
+        $product = DB::table('products')        
+            ->select('products.*')
+            ->where('products.id', '=', $id)
+            ->first();
         
-        $produk_review = ProductReview::all();
+        $product_review = ProductReview::where('product_id', '=', $id)->get();
+        $tanggal = Carbon::now('Asia/Makassar')->format('Y-m-d');
+
+        $discount = Discount::where('id_product', '=', $id)->where('start', '<=', $tanggal)->where('end', '>=', $tanggal)->get();
+
+        $harga = $product->price;
+        foreach ($discount as $discounts) {
+            $harga = $harga - ($harga * $discounts->percentage / 100);
+        }
+        return view('admin.transaksi.produkPage', compact('produk', 'discount', 'harga', 'product_review'));
             
-        return view('admin.transaksi.produkPage', compact('produk', 'produk_review'));
+        // return view('admin.transaksi.produkPage', compact('produk', 'produk_review'));
 
     }
 
@@ -124,9 +144,9 @@ class TransaksiController extends Controller
             'content' => $request->content_review
         );
 
-        book_review::create($review);
+        product_review::create($review);
 
-        $jumlah_rate = book_review::where('product_id', '=', $id)->get();
+        $jumlah_rate = product_review::where('product_id', '=', $id)->get();
         if (count($jumlah_rate) > 0) {
             $jumlah = 0;
             $total = 0;
@@ -137,7 +157,7 @@ class TransaksiController extends Controller
             $product_rate = $total / $jumlah;
 
             $product = Product::find($id);
-            $product->book_rate = $product_rate;
+            $product->product_rate = $product_rate;
             $product->save();
         }
         $user = auth::user();
@@ -165,8 +185,14 @@ class TransaksiController extends Controller
         //     ->where('active', '=', '1')
         //     ->get();
         $user_id = Auth::guard('web')->user()->id;
-        $keranjang = Cart::where('user_id', '=', $user_id)->get();
-        // dd($keranjang);
+        $keranjang = DB::table('carts')
+            ->join('discounts', 'discounts.id_product', '=', 'product_id')
+            ->select('carts.*', 'discounts.percentage')
+            ->where('user_id', '=', $user_id)
+            ->where('status', '=', 'aktif')
+            ->get();
+            // dd($keranjang);
+        
         return view('keranjang', compact('keranjang'));
     }
 
@@ -208,13 +234,14 @@ class TransaksiController extends Controller
         $cart = Cart::where('user_id', '=', $user_id)->get();
         $product_id = Cart::where('product_id', '=', $id)->first();
 
+
         // dd($id);
         $array = [];
         foreach ($cart as $carts){
             $value_product = array($carts->product_id);
             array_push($array, $value_product);
-            // $array = array_push($carts->product_id);            
-        }  
+            // $array = array_push($carts->product_id);
+        }
         $check = array($array);
         if(in_array(1, $check)){
             return redirect()->back()->with('error','Produk sudah ada pada Cart Anda!');
@@ -242,7 +269,7 @@ class TransaksiController extends Controller
     public function keranjang_alamat(Request $request)
     {
         $user_id = Auth::guard('web')->user()->id;
-        $keranjang = Cart::where('user_id', '=', $user_id)->get();
+        $keranjang = Cart::where('user_id', '=', $user_id)->where('status', '=', 'aktif')->get();
         $kurir = Courier::all();
         $i = 0;
         foreach ($keranjang as $keranjangs) {
@@ -313,17 +340,30 @@ class TransaksiController extends Controller
         $address = $request->address;
 
         $selling_price = array();
+        $discount =  array();
 
-        $keranjang = Cart::where('user_id', '=', $user_id)->get();
+        $keranjang = DB::table('carts')
+            ->join('products', 'products.id', '=', 'product_id')    
+            ->join('discounts', 'discounts.id_product', '=', 'product_id')
+            ->select('carts.*', 'products.*', 'discounts.percentage')
+            ->where('user_id', '=', $user_id)
+            ->where('status', '=', 'aktif')
+            ->get();
+            
+        $harga = 0;
         $subtotal = 0;
         $weight = 0;
         $tanggal = Carbon::now('Asia/Makassar')->format('Y-m-d');
 
         foreach ($keranjang as $keranjangs) {    
-            $weight = $weight + ($keranjangs->qty * $keranjangs->product->weight * 1000);
-            $subtotal = $subtotal + ($keranjangs->qty * $keranjangs->product->price);
-            array_push($selling_price, $keranjangs->product->price);
+            $weight = $weight + ($keranjangs->qty * $keranjangs->weight * 100);
+            $diskon = $keranjangs->percentage * $keranjangs->price / 100;
+            $harga = $keranjangs->price - $diskon;
+            $subtotal = $subtotal + ($keranjangs->qty * $harga);
+            array_push($selling_price, $harga);    
+            // array_push($discount, $diskon);    
         }
+        // dd($selling_price);
 
         $curl = curl_init();
 
@@ -366,6 +406,8 @@ class TransaksiController extends Controller
 
     public function keranjang_bayar(Request $request)
     {
+        // $total = $request->total;
+        // dd($total);
         $user_id = Auth::guard('web')->user()->id;
         $courier = Courier::where('courier', '=', $request->courier)->first();
         $timeout = Carbon::now();
@@ -390,16 +432,17 @@ class TransaksiController extends Controller
       
         $i = 0;
         foreach ($request->keranjang as $keranjangs) {
-            $keranjang = Cart::find($keranjangs);
-            $transaksi_detail = array(
+            $cart = Cart::where('product_id', '=', $keranjangs)->where('user_id', '=', $user_id)->where('status', '=', 'aktif')->get();
+            TransactionDetail::create([
                 'transaction_id' => $transaction->id,
-                'product_id' => $keranjang->product_id,
-                'qty' => $keranjang->qty,
+                'product_id' => $cart[0]->product_id,
+                'qty' => $cart[0]->qty,
                 'selling_price' => $request->selling_price[$i],
-            );
-            TransactionDetail::create($transaksi_detail);
-            $product = Product::find($keranjang->product_id);
-            $product->stock = $product->stock - $keranjang->qty;
+            ]);
+            
+            // TransactionDetail::create($transaksi_detail);
+            $product = Product::find($cart[0]->product_id);
+            $product->stock = $product->stock - $cart[0]->qty;
             $product->save();
             $i++;
         }
@@ -491,26 +534,25 @@ class TransaksiController extends Controller
 
         $user_id = Auth::guard('web')->user()->id;
         
-        $produk = Product::find($id)->first();
+        $produk = Product::where('id', '=', $id)->first();
         $kurir = Courier::find($request->courier_id)->first();
 
         list($province, $province_name) = explode('|', $request->province);
         list($regency, $regency_name) = explode('|', $request->regency);
         $address = $request->address;
-
-        $keranjang = Cart::where('user_id', '=', $user_id)->first();
-        
      
         $subtotal = 0;
         $tanggal = Carbon::now('Asia/Makassar')->format('Y-m-d');
-        $selling_price = $produk->price;
-        
-        // $weight = $produk->weight * $jumlah * 1000;
+        $discount = Discount::where('id_product', '=', $id)->where('start', '<=', $tanggal)->where('end', '>=', $tanggal)->orderBy('id', 'DESC')->get();
+
+        foreach ($discount as $discounts) {
+            $selling_price = $produk->price - ($produk->price * $discounts->percentage / 100);
+        }
+
         $weight = $produk->weight * $jumlah;
         $subtotal = $jumlah * $selling_price;
 
         $curl = curl_init();
-        
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
@@ -520,13 +562,14 @@ class TransaksiController extends Controller
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "origin=".$request->province."&destination=" . $request->regency . "&weight=" . $weight . "&courier=" . $kurir->courier,
+            CURLOPT_POSTFIELDS => "origin=". 114 ."&destination=" . $request->regency . "&weight=" . $weight . "&courier=" . $kurir->courier,
             CURLOPT_HTTPHEADER => array(
                 "content-type: application/x-www-form-urlencoded",
                 "key: 400f496a78d8de8e403cb03633e42774"
             ),
         ));
 
+        // 114 itu dps yaa kawan-kawan
         $response = curl_exec($curl);
         $err = curl_error($curl);
         curl_close($curl);
@@ -536,8 +579,10 @@ class TransaksiController extends Controller
         
         foreach ($cost["rajaongkir"]["results"] as $costs) {
             foreach ($costs["costs"] as $costss) {
+                    // $shipping_cost = $costss["service"];
                 foreach ($costss["cost"] as $costsss) {
                     $shipping_cost = $costsss["value"];
+                    $etd = $costsss["etd"];
                     break;
                 }
                 break;
@@ -547,7 +592,7 @@ class TransaksiController extends Controller
                 
         $total = $shipping_cost + $subtotal;
         
-        return view('beli-checkout', compact('produk', 'jumlah', 'kurir', 'subtotal', 'selling_price', 'province_name', 'regency_name', 'address', 'shipping_cost', 'total'));
+        return view('beli-checkout', compact('produk', 'jumlah', 'kurir', 'subtotal', 'discount', 'selling_price', 'province_name', 'regency_name', 'address', 'shipping_cost', 'etd', 'total'));
     }
 
     public function beli_bayar($id, $jumlah, Request $request)
@@ -574,7 +619,7 @@ class TransaksiController extends Controller
         );
         Transaction::create($transaksi);
 
-        $transaction = Transaction::where('user_id', '=', $user_id)->where('total', '=', $request->total)->latest()->first();
+        $transaction = Transaction::where('user_id', '=', $user_id)->latest()->first();
 
         $transaksi_detail = array(
             'transaction_id' => $transaction->id,
@@ -681,11 +726,11 @@ class TransaksiController extends Controller
             $keranjang = Cart::find($k->id);
             $keranjang->status="hapus";
             $keranjang->update();
-        }
+        }        
 
         $tanggal = Carbon::now('Asia/Makassar');
         
-        if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout < $tanggal) {
+        if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout < $tanggal) {            
             $transaction->status = "transaksi expired";
             $transaction->save();
 
@@ -711,8 +756,45 @@ class TransaksiController extends Controller
                 //notif user----------------------------------------------------------
        
             return view('transaksi-detail', compact('transaction', 'transaction_detail'));
-        } else if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout >= $tanggal) {
+        } else if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout >= $tanggal) {            
             $date = Carbon::createFromFormat('Y-m-d H:s:i', $transaction->timeout);
+            $interval = $tanggal->diffAsCarbonInterval($date);
+            // dd($interval);
+            // $date = Carbon::createFromFormat('Y-m-d', $transaction->timeout)->toDateTimeString();
+            // dd('ts');
+            // $interval = $tanggal->diffAsCarbonInterval($date);
+          
+            // //notif admin---------------------------------------
+            //  $user=auth::user();
+            //  $user_data=User::find($user->id);
+            //  $admin = Admin::find(3);
+            //  $data = [
+            //     'nama'=> $user->name,
+            //     'message'=>'new Transaction!',
+            //     'id'=> $id,
+            //     'category' => 'transcation'
+            // ];e
+            // $data_encode = json_encode($data);
+            // $admin->createNotif($data_encode);
+            // //notif admin---------------------------------------
+
+            //notif user---------------------------------------
+        //     $user=auth::user();
+        //     $user_data=User::find($user->id);
+        //     $admin = Admin::find(3);
+        //     $data = [
+        //        'nama'=> 'admin',
+        //        'message'=>'Upload Bukti Pembayaran!',
+        //        'id'=> $id,
+        //        'category' => 'proof'
+        //    ];
+        //    $data_encode = json_encode($data);
+        //    $user_data->createNotifUser($data_encode);
+        //    //notif user---------------------------------------
+
+            return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail', 'user_id'));
+        } else if ($transaction->status == "transaksi tidak terverifikasi" && $transaction->timeout <= $tanggal) {            
+            $date = Carbon::createFromFormat('Y-m-d H:s:i', $transaction->timeout);            
             $interval = $tanggal->diffAsCarbonInterval($date);
             // $date = Carbon::createFromFormat('Y-m-d', $transaction->timeout)->toDateTimeString();
             // dd('ts');
@@ -747,7 +829,7 @@ class TransaksiController extends Controller
         //    //notif user---------------------------------------
 
             return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail', 'user_id'));
-        } else {
+        }else {            
 
             //notif user---------------------------------------
             // $user=auth::user();

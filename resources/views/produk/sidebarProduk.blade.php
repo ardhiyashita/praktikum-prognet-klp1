@@ -24,6 +24,11 @@
         <span>Kategori</span></a>
 </li>
 <li class="nav-item">
+    <a class="nav-link" href="{{  url('admin/diskon') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Diskon</span></a>
+</li>
+<li class="nav-item">
     <a class="nav-link" href="{{  url('admin/adm/transaksi') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Transaksi</span></a>

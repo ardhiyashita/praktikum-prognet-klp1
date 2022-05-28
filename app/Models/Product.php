@@ -15,4 +15,9 @@ class Product extends Model
     {
         return $this->belongsTo(ProductCategory::class, 'id_category', 'id');
     }
+
+    public function discount()
+    {
+        return $this->hasMany(Discount::class, 'id_product', 'id');
+    }
 }

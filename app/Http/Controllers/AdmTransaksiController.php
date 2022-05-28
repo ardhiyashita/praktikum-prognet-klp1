@@ -129,7 +129,7 @@ class AdmTransaksiController extends Controller
             // $data_encode = json_encode($data);
             // $user->createNotifUser($data_encode);
 
-            return view('transaksi-detail', compact('transaction', 'transaction_detail'));
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));
         } else if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout >= $tanggal) {
             $date = Carbon::createFromFormat('Y-m-d H:s:i', $transaction->timeout);
             $interval = $tanggal->diffAsCarbonInterval($date);
@@ -143,7 +143,7 @@ class AdmTransaksiController extends Controller
 
             // $data_encode = json_encode($data);
             // $user->createNotifUser($data_encode);
-            return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail'));
+            return view('adm-transaksi-detail', compact('transaction', 'interval', 'transaction_detail'));
         } else if ($transaction->status == "sudah terverifikasi") {
 
             $data = [
@@ -156,7 +156,22 @@ class AdmTransaksiController extends Controller
             $data_encode = json_encode($data);
             // $user->createNotifUser($data_encode);
 
-            return view('transaksi-detail', compact('transaction', 'transaction_detail'));
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));
+        } else if ($transaction->status == "transaksi tidak terverifikasi" && $transaction->timeout >= $tanggal) {
+            $date = Carbon::createFromFormat('Y-m-d H:s:i', $transaction->timeout);
+            $interval = $tanggal->diffAsCarbonInterval($date);
+
+            $data = [
+                'nama'=> 'Admin',
+                'message'=>'transaksi tidak terverifikasi',
+                'id'=> $id,
+                'category' => 'transaction'
+            ];
+
+            $data_encode = json_encode($data);
+            // $user->createNotifUser($data_encode);
+
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));
         }else if ($transaction->status == "transaksi dibatalkan") {
 
             $data = [
@@ -169,7 +184,7 @@ class AdmTransaksiController extends Controller
             $data_encode = json_encode($data);
             // $user->createNotifUser($data_encode);
 
-            return view('transaksi-detail', compact('transaction', 'transaction_detail'));
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));
         }else if ($transaction->status == "barang dalam pengiriman") {
 
             $data = [
@@ -182,7 +197,7 @@ class AdmTransaksiController extends Controller
             $data_encode = json_encode($data);
             // $user->createNotifUser($data_encode);
 
-            return view('transaksi-detail', compact('transaction', 'transaction_detail'));
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));
         }else if($transaction->status == "barang telah sampai di tujuan"){
             $data = [
                 'nama'=> 'Admin',
@@ -193,9 +208,9 @@ class AdmTransaksiController extends Controller
 
             $data_encode = json_encode($data);
             // $user->createNotifUser($data_encode);
-            return view('transaksi-detail', compact('transaction', 'transaction_detail'));   
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));   
         }else{
-            return view('transaksi-detail', compact('transaction', 'transaction_detail'));   
+            return view('adm-transaksi-detail', compact('transaction', 'transaction_detail'));   
         }
     }
 

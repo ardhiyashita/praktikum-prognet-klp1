@@ -8,6 +8,7 @@
   <link href="{{ asset('assets/css/cart.css') }}" rel="stylesheet" />
 @endsection
 
+@if(count($keranjang) > 0)
 <form method="post" action="{{route('keranjang-alamat')}}" enctype="multipart/form-data">
     @csrf
     <div class="row">
@@ -34,19 +35,29 @@
                             </a>
                         </header>
                         <div class="content">
-                            <h1>
-                                <a href="{{route('produk-page', $value->product_id)}}">
-                                    <h4 class="card-title">{{$data->product_name}}</h4>
-                                </a>
+                            <a href="{{route('produk-page', $value->product_id)}}">
+                                <h4 class="card-title">{{$data->product_name}}</h4>
+                            </a>
+                            @if($value->percentage == 0)
+                            <h1> 
+                                Rp.{{$data->price}},00
                             </h1>
                             <span>{{$data->description}}</span>
+                            @else
+                            <h1> 
+                                <strike> {{$data->price}} </strike> 
+                                <sup>{{$value->percentage}}%</sup>
+                                = Rp.{{ $data->price - ($data->price * $value->percentage / 100) }},00
+                            </h1>
+                            <span>{{$data->description}}</span>
+                            @endif
                         </div>
                         <footer class="content">
                             {{-- $totalHarga = {{$data->price}} *  --}}
-                            <h2 class="full-price">{{$data->price}}</h2>
-                            {{-- <h2 class="price">{{$data->price}}</h2> --}}
+                            <h2 class="full-price">Rp.{{ $data->price - ($data->price * $value->percentage / 100) }} with discount</h2>
+                            {{-- <h2 class="price">Rp.{{ $data->price - ($data->price * $value->percentage / 100) }} with discount</h2> --}}
                             @php
-                                $harga = $data->price;
+                                $harga = $data->price - ($data->price * $value->percentage / 100);
                                 array_push($array_harga, $harga);
                             @endphp
 
@@ -55,9 +66,9 @@
                             <span class="qt">{{$value->qty}}</span>
                             <span class="qt-plus">+</span> --}}
 
-                            <input class="form-control form-control-lg" style="width:70px;" type="number" name="jumlah[]" value="{{$value->qty}}" id="jumlah{{$i}}" min="1" max="{{$value->stock}}" 
-                            onkeyup="stock = '<?php echo $value->stock; ?>';  
-                            
+                            <input class="form-control form-control-lg" style="width:70px;" type="number" name="jumlah[]" value="{{$value->qty}}" id="jumlah{{$i}}" min="1"
+                            onkeyup="stock = '<?php echo $data->stock; ?>';  
+
                             if(this.value<0){this.value= this.value * -1}
                             
                             else if(this.value==0){this.value = 1}
@@ -125,5 +136,14 @@
         });
     });
 </script>
+
+@else
+    <section id="cart">
+        <div class="content">
+            <img style="width: 100%;" src="{{ asset('/img/pin_7.jpg') }}" alt="">
+            <h2 class="full-price pb-3" style="background-color:white; color:gray; text-align:center">! Anda belum menambahkan produk ke Cart Anda !</h2>                            
+        </div>
+    </section>
+@endif
 
 @endsection
