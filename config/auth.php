@@ -21,6 +21,10 @@ return [
         'driver'=>'eloquent',
         'model'=> App\Models\Admin::class,
     ],
+    'user' =>[
+        'driver'=>'eloquent',
+        'model'=> App\Models\User::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -117,7 +121,12 @@ return [
         'admins'=>[
         'driver'=>'eloquent',
         'model'=> App\Models\Admin::class,
-        ]
+        ],
+
+        // 'users'=>[
+        //     'driver'=>'eloquent',
+        //     'model'=> App\Models\User::class,
+        // ]
     ],
 
     /*

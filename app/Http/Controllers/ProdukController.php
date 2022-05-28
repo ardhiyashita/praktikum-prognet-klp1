@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\ProductCategory;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use illuminate\Pagination\Paginator;
 // use Illuminate\Http\Request;
@@ -29,13 +30,14 @@ class ProdukController extends Controller
         //$produk = Product::latest()->paginate(5);
         $produk= DB::Table('products')->join('product_categories','products.id_category','=','product_categories.id')
         ->select('products.*','product_categories.category_name')->orderBy('products.created_at')->paginate(5);        
-        return view('admin.transaksi.produkPage', compact('produk'));
+        return view('produk.produkPage', compact('produk'));
+        // return view('admin.transaksi.produkPage', compact('produk'));
     }
 
     public function add(){
      
         $category= DB::Table('product_categories')->get();
-        return view('admin.transaksi.produkAdd',compact('category'));
+        return view('produk.produkAddPage',compact('category'));
     }
 
     public function create(Request $request){
@@ -62,6 +64,20 @@ class ProdukController extends Controller
             'stock'=>$request->stock
         ]);
 
+        $product = Product::latest()->first();
+        $id_product = $product->id;
+
+        $date = Carbon::now();
+        $date->toDateTimeString();
+        // dd($date);
+
+        DB::table('discounts')->insert([
+            'id_product' => $id_product,
+            'percentage' => 0,
+            'start' => $date,
+            'end' => $date,
+        ]);
+
         $product_id= DB::Table('products')->where('product_name',$request->product_name)->where('id_category',$request->category)
         ->where('stock',$request->stock)->orderBy('id','desc')->value('id');
         //dd($product_id);
@@ -78,7 +94,7 @@ class ProdukController extends Controller
     {
         $category= DB::Table('product_categories')->get();
         $produk = DB::table('products')->where('id', $id)->first();
-        return view('admin.transaksi.produkEdit', compact('produk','category'));
+        return view('produk.produkEditPage', compact('produk','category'));
     }
 
     public function editprocess(Request $request, $id){

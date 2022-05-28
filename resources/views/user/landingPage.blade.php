@@ -1,8 +1,9 @@
 @extends('layouts.navigation')
 
-@section('title', 'Landing Page')
+@section('title', 'Landing Pages')
 
 @section('content')
+
 <form action="{{ route('cart-insert') }}" method="POST" enctype="multipart/form-data">
     @csrf
         <!-- Header-->
@@ -56,6 +57,7 @@
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center" style="display:flex; justify-content:space-around ">
+                        
                                     <a class="btn btn-outline-dark mt-auto" href="{{ route('produk-page', $item->id) }}">View</a>
                                     <button class="btn btn-outline-dark mt-auto" type="submit">Add to Cart</a> 
                                     <input type="hidden" value="{{ $item->id }}" name='id'>

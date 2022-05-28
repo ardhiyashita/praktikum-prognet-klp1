@@ -32,6 +32,8 @@ class HomeController extends Controller
             ->join('product_images', 'products.id', '=', 'product_id')
             ->select('products.*', 'product_images.image_name')
             ->get();
+
+            // dd($produk);
         return view('user.landingPage', compact('produk'));
     }
 }

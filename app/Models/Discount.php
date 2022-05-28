@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Discount extends Model
 {
     use HasFactory;
+    protected $guards = [];
+    protected $fillable = ['id', 'id_product', 'percentage', 'start', 'end'];
 
     public function product()
     {
-        
+        return $this->belongsTo(Product::class, 'id_product', 'id');
     }
 }

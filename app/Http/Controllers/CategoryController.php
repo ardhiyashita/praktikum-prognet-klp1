@@ -10,11 +10,11 @@ class CategoryController extends Controller
 {
      public function index(){
         $kategori = ProductCategory::latest()->paginate(5);
-        return view('admin.transaksi.category', compact('kategori'));
+        return view('produk.categoryPage', compact('kategori'));
     }
 
     public function add(){
-        return view('admin.transaksi.categoryAdd');
+        return view('produk.categoryAddPage');
     }
 
     public function create(Request $request){
@@ -31,7 +31,7 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $kategori = DB::table('product_categories')->where('id', $id)->first();
-        return view('admin.transaksi.CategoryEdit', compact('kategori'));
+        return view('produk.categoryEditPage', compact('kategori'));
     }
 
     public function editprocess(Request $request, $id){
