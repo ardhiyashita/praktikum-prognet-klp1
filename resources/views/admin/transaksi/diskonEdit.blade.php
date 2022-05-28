@@ -22,6 +22,7 @@
                         <div class="row">
                             <div class="col-md-4 offset-md-4">
                                 <form action="{{  url('admin/diskon/'.$diskon->id) }}" method="POST">
+                                    @method('patch')    
                                     @csrf
                                     <div class="form-group">
                                         <label  class="mt-2">Nama Produk</label>

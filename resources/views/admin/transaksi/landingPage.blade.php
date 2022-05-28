@@ -19,6 +19,9 @@
                     <a href="{{ url('admin/courier') }}">
                     <p>Kurir</p>
                     </a>
+                    <a href="{{ url('admin/diskon') }}">
+                    <p>Diskon</p>
+                    </a>
                     <p class="lead fw-normal text-white-50 mb-0">get healthy life with us</p>
                 </div>
             </div>
