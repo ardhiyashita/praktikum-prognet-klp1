@@ -34,7 +34,11 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('landing-page-user') }}">Home</a></li>
                     <li class="nav-item dropdown">
+<<<<<<< HEAD
                             <a class="fa fa-bell nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+=======
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Notification</a>
+>>>>>>> be13cf444459832b86d3d754d734d3895e10a68d
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 @foreach (Auth::guard('web')->user()->unreadNotifications as $notification)
                                     <li><a class="dropdown-item" href="#">{{$notification->data['message']}}</a></li>
@@ -76,22 +80,33 @@
                     @endif
 
                     </ul>
-                    <form class="d-flex">
-                        <button class="btn btn-outline-dark" type="submit">
+
+                        <button class="btn btn-outline-dark">
                             <i class="bi-cart-fill me-1"></i>                            
                                 <a href="{{ route('keranjang') }}" style="text-decoration:none; color:black;">Cart</a>
                         </button>
-                    </form>
 
-                    <form action="{{ route('logout') }}" method="post">
-                        @csrf
-                        <button class="ml-2 btn btn-outline-dark" type="submit">Logout
-                        </button>
-                    </form>
+                        <form action="{{ route('logout') }}" method="post">
+                            @csrf
+                            <button class="btn btn-outline-dark" type="submit">Logout
+                            </button>
+                        </form>
 
-                    <button class="btn btn-outline-dark" type="submit">
-                        <a href="{{ route('status-transaksi-page') }}" style="text-decoration:none; color:black;">User</a>
-                    </button>
+
+                    <ul class="navbar-nav ml-5">                       
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link" href="{{ route('status-transaksi-page') }}"
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::guard('web')->user()->name}}</span>
+                                <img style="width:50px"
+                                    src=" {{ asset('assets/img2/undraw_profile.svg') }}">
+                            </a>
+                        </li>
+
+                    </ul>
 
                 </div>
             </div>

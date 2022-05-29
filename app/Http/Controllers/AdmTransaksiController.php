@@ -52,6 +52,12 @@ class AdmTransaksiController extends Controller
         return view('admin.transaksi.produkPage', compact('produk', 'produk_image', 'produk_review'));            
     }
 
+    public function review()
+    {
+        $review = ProductReview::latest()->paginate(5);        
+        return view('produk.review', compact('review'));
+    }
+
     public function response_submit($id, Request $request)
     {
         $validatedData = $request->validate([
@@ -77,7 +83,7 @@ class AdmTransaksiController extends Controller
             'id'=> $produk_id->product_id,
             'category' => 'review'
         ];
-        $data_encode = json_encode($data);
+        // $data_encode = json_encode($data);
         // $user->createNotifUser($data_encode);
         return redirect()->back();
     }

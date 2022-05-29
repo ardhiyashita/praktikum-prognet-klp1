@@ -39,6 +39,11 @@
         <span>Transaksi</span></a>
 </li>
 <li class="nav-item">
+    <a class="nav-link" href="{{  url('admin/adm/review') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Review</span></a>
+</li>
+<li class="nav-item">
     <a class="nav-link" href="{{  url('admin/logout') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Log Out</span></a>

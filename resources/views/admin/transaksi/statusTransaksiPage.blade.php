@@ -17,49 +17,62 @@
                     <div class="roboto-hijau">
                     @foreach($transaction as $transactions)
                         <a href="{{route('transaksi-detail', $transactions->id)}}" style="text-decoration:none; color:#328831;">
-                            <div class="card">
+                            <div class="card mb-2">
                                 <div class="card-body">
+                                @if($transactions->status == 'transaksi dibatalkan')
+                                    <h4 class="card-title" style="color:darkred;">{{$transactions->status}}</h4>
+                                @elseif($transactions->status == 'transaksi tidak terverifikasi')
+                                    <h4 class="card-title" style="color:darkorange;">{{$transactions->status}}</h4>
+                                @else
                                     <h4 class="card-title">{{$transactions->status}}</h4>
+                                @endif
                                     <h6 class="card-subtitle mb-3 mt-2 text-muted">Tanggal&nbsp;:&nbsp;{{$transactions->created_at->format('Y-m-d')}}</h6>
                                     <h6 class="card-subtitle mb-2 text-muted">Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;Rp.{{$transactions->total}}</h6>
                                     @if($transactions->status == "menunggu bukti pembayaran")
-                                    <div class="form-inline">
-                                        <p class="card-text">Countdown&nbsp;:&nbsp;{{$interval[$loop->index]}}</p>
-                                    
+                                    <div class="form-inline">                      
+                                        <p class="card-text" id="countdown"></p>
                                     </div>
                                     @endif
                                 </div>
                             </div>
+                                
+
+                            <script>
+                                CountDownTimer('{{ $transactions->created_at }}', 'countdown');
+                                function CountDownTimer(dt, id)
+                                {
+                                    var end = new Date('{{ $transactions->timeout }}');
+                                    var _second = 1000;
+                                    var _minute = _second * 60;
+                                    var _hour = _minute * 60;
+                                    var _day = _hour * 24;
+                                    var timer;
+                                    function showRemaining() {
+                                    var now = new Date();
+                                    var distance = end - now;
+                                    if (distance < 0) {
+                                    clearInterval(timer);
+                                    return;
+                                    }
+                                    var days = Math.floor(distance / _day);
+                                    var hours = Math.floor((distance % _day) / _hour);
+                                    var minutes = Math.floor((distance % _hour) / _minute);
+                                    var seconds = Math.floor((distance % _minute) / _second);
+                                    document.getElementById(id).innerHTML = days + ' day ';
+                                    document.getElementById(id).innerHTML += hours + ' hours ';
+                                    document.getElementById(id).innerHTML += minutes + ' minutes ';
+                                    document.getElementById(id).innerHTML += seconds + ' secs ';
+                                }
+                                timer = setInterval(showRemaining, 1000);
+                                }
+                            </script>
+                            @endforeach
+
                         </a>
-                    @endforeach
                     </div>
                 </div>
-                <!-- <div class="box-lima mb-3" style="width: auto;">
-                    <div class="profile-photo"></div>
-                    <div class="roboto-hijau">Order Satu
-                        <div class="box-dua" style="padding:10px 0px">
-                            <div class="detail-box">
-                                <div class="roboto-hijau">Detail Produk</div>
-                                <div class="roboto-abu">Kondisi</div>
-                                <div class="roboto-abu">Berat</div>
-                                <div class="roboto-abu">Kategori</div>
-                                <div class="roboto-abu">Kurir</div>
-                                <div class="price">Rp.10.000,00</div>
-                            </div>
-                            <div class="detail-data">
-                                <div class="roboto-hijau">:</div>
-                                <div class="roboto-hitam">Baru</div>
-                                <div class="roboto-hitam">100gr</div>
-                                <a href="#" class="roboto-hijau">Snack</a>
-                                <div class="roboto-hitam">JNE Express</div>
-                            </div>
-                        </div>
-                        <div class="roboto-hijau mb-2" style="font-size:large;">Upload Bukti Pembayaran Anda di bawah</div>
-                        <input id="foto" name="foto" type="file" class="form-control">
-                    </div>
-                </div> -->
-        
+
     </section>
         
-    </div>
+</div>
 @endsection
