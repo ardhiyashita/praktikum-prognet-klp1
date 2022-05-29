@@ -14,15 +14,13 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet" />
         <link href="{{ asset('assets/css/projekStyle.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/shop/css/styles2.css') }}" rel="stylesheet" />
+        <script src="jquery/jquery.js"></script>
+        <script type="text/javascript" src='js/bootstrap.min.js'></script>
+        <link rel="stylesheet" href="css/bootstrap.css" />
         @yield('css')
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous" defer>
-      </script>
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-      <script src="scripts/config.js" defer></script>
-
+    
     </head>
     <body><!-- Navigation-->
         <div class="wrapper ">
@@ -33,9 +31,8 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('landing-page-user') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Notification</a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="#!">All Products</a></li>
                                 <li><hr class="dropdown-divider" /></li>
@@ -77,22 +74,33 @@
                     @endif
 
                     </ul>
-                    <form class="d-flex">
-                        <button class="btn btn-outline-dark" type="submit">
+
+                        <button class="btn btn-outline-dark">
                             <i class="bi-cart-fill me-1"></i>                            
                                 <a href="{{ route('keranjang') }}" style="text-decoration:none; color:black;">Cart</a>
                         </button>
-                    </form>
 
-                    <form action="{{ route('logout') }}" method="post">
-                        @csrf
-                        <button class="ml-2 btn btn-outline-dark" type="submit">Logout
-                        </button>
-                    </form>
+                        <form action="{{ route('logout') }}" method="post">
+                            @csrf
+                            <button class="btn btn-outline-dark" type="submit">Logout
+                            </button>
+                        </form>
 
-                    <button class="btn btn-outline-dark" type="submit">
-                        <a href="{{ route('status-transaksi-page') }}" style="text-decoration:none; color:black;">User</a>
-                    </button>
+
+                    <ul class="navbar-nav ml-5">                       
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link" href="{{ route('status-transaksi-page') }}"
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::guard('web')->user()->name}}</span>
+                                <img style="width:50px"
+                                    src=" {{ asset('assets/img2/undraw_profile.svg') }}">
+                            </a>
+                        </li>
+
+                    </ul>
 
                 </div>
             </div>
@@ -114,6 +122,12 @@
         <!-- Core theme JS-->
         <script src="{{ asset('assets/js/scripts.js') }}"></script>
         <script src="{{ asset('assets/js/cart.js') }}"></script>
+        <script src="{{ asset('assets/shop/js/scripts.js') }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('dropdown-toggle').dropdown()
+            });
+        </script>
         @include('sweetalert::alert')
         </div>
     </body>

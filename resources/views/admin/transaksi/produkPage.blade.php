@@ -29,8 +29,12 @@
         <div class="container" style="display:flex; justify-content:space-between;">
             <img class="box-produk" src="/img/{{{ $item->image_name }}}" alt="">
                 <div class="box-satu mb-3">
-                <img src="../img/rate.png" alt="">
-                    <div class="product-name">{{ $item->product_name }}</div>
+                <div class="product-name" style="font-size: 30px;">{{ $item->product_name }}</div>
+                <div class="d-flex text-warning">
+                    @for ($i = 1; $i <= $item->product_rate ; $i++)
+                        <div class="bi-star-fill"></div>
+                    @endfor
+                </div>
                     <div class="white-line"></div>
                     <div class="price">Rp.{{ $harga }},00</div>
                     <div class="white-line"></div>
@@ -53,13 +57,13 @@
                                 @endforeach
                             </div>
                             <div class="roboto-hitam">Rp.{{ $item->price }},00</div>
-                            <a href="#" class="roboto-hijau">Fresh</a>
+                            <div class="roboto-hijau">Fresh</div>
                         </div>
                     </div>
                     <div class="white-line"></div>
                     <div class="box-tiga">
                         <div class="roboto-hijau">SayurBox | Fresh Vegetables Shops in Bali</div>
-                        <div class="roboto-hitam">Jln. Abiansemal XXVI No. 231, Badung, 80352</div>
+                        <div class="roboto-hitam">Jln. Gunung Agung XXVI No. 231, Denpasar</div>
                     </div>
                 </div>
 
@@ -87,54 +91,131 @@
                 </form>
             </div>
         </div>
-    
-
         
+
+
+
 
         <div class="container">
             <div class="box-ulasan">
                 <div class="product-name">ULASAN</div>
                 <div class="white-line"></div>
-                @if($product_review)
+                @if(!empty($product_review))
                     @foreach($product_review as $value)
                         <div class="box-lima">
                             <div class="profile-photo"></div>
-                            <div class="roboto-hijau"> {{ $value->user->name }}
-                                <div class="roboto-hitam">{{ $value->content }}</div>
+                            <div class="roboto-hijau" style="font-size:larger"> {{ $value->user->name }}
+                            <div class="d-flex small text-warning">
+                                @for ($i = 1; $i <= $value->rate ; $i++)
+                                    <div class="bi-star-fill"></div>
+                                @endfor
+                            </div>
+                            <div class="roboto-hitam mb-2">{{ $value->content }}</div>
+                                @php
+                                    $response = DB::table('responses')
+                                        ->join('product_reviews', 'product_reviews.id', '=', 'review_id')
+                                        ->join('admins', 'admins.id', '=', 'admin_id')
+                                        ->select('responses.*', 'product_reviews.product_id', 'product_reviews.user_id', 'admins.name')
+                                        ->where('review_id', '=', $value->id)
+                                        ->where('product_id', '=', $item->id)
+                                        ->get();                                        
+                                @endphp
+
+                                @foreach($response as $responses)
+                                    <div class="white-line"></div>
+                                    <div class="mt-3">
+                                        <h6 class="card-subtitle text-muted">Balasan: Admin | {{$responses->name}}</h6>
+                                        <p class="card-text mb-3">{{$responses->content}}</p>
+                                    </div>
+                                    @endforeach
+
+
+
+                                @auth('admin')
+
+                                    @php
+                                        $response = DB::table('responses')
+                                            ->join('product_reviews', 'product_reviews.id', '=', 'review_id')
+                                            ->select('responses.*', 'product_reviews.product_id', 'product_reviews.user_id')
+                                            ->where('review_id', '=', $value->id)
+                                            ->where('product_id', '=', $item->id)
+                                            ->get();  
+                                            
+                                            $rev = null;                                        
+                                    @endphp
+
+                                    @foreach($response as $responses)
+                                    <div class="white-line"></div>
+                                    <div class="mt-3">
+                                        <h6 class="card-subtitle text-muted">Balasan: Admin | {{Auth::guard('admin')->user()->name}}</h6>
+                                        <p class="card-text mb-3">{{$responses->content}}</p>
+                                    </div>
+                                    @endforeach
+
+                                    <div class="container mt-3">
+                                        <div class="white-line"></div>
+                                            <h6 class="card-subtitle text-muted mt-2 mb-1">Admin | {{Auth::guard('admin')->user()->name}}</h6>
+                                            @if(count($product_review)>0)
+                                                @foreach($product_review as $value)
+                                                    <form class="form-inline" method="post" action="{{route('admin.adm-response-submit', $value->id)}}" enctype="multipart/form-data">
+                                                        @csrf
+                                                        @endforeach
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control @error('content') is-invalid @enderror" placeholder="Berikan Balasan" name="content" spellcheck="false">
+                                                            @error('content')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                            @enderror
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary mt-2 ms-2">Kirim</button>
+                                                    </form>                                                
+                                            @else
+                                                <div>Tidak ada ulasan untuk produk ini</div>
+                                            @endif
+                                        </div>
+
+
+
+                                @endauth
+
+
                             </div>
                         </div>
                     @endforeach
                 @else
                     <div>Tidak ada ulasan untuk produk ini</div>
                 @endif
-            </div>
-        </div>
-    @endforeach
 
-            @auth('admin')
-                <h6 class="card-subtitle text-muted mt-2 mb-1">Admin | {{Auth::guard('admin')->user()->name}}</h6>
-                @if(count($product_review)>0)
-                    @foreach($product_review as $value)
-                        <form class="form-inline" method="post" action="{{route('admin.adm-response-submit', $value->id)}}" enctype="multipart/form-data">
-                            @csrf
-                            <div class="form-group">
-                                <input type="text" class="form-control @error('content') is-invalid @enderror" placeholder="Berikan Balasan" style="width:500px;" name="content" spellcheck="false">
-                                @error('content')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                            <button type="submit" class="btn btn-primary ms-2">Kirim</button>
-                        </form>
-                    @endforeach
-                @else
-                    <div>Tidak ada ulasan untuk produk ini</div>
-                @endif
-            @endauth
+
+
+
+            @if(!empty($rev))          
+            <div class="box-lima">
+                <div class="profile-photo"></div>             
+                    <form class="form-inline" method="post" action="{{route('review-submit', $item->id)}}" enctype="multipart/form-data">
+                        @csrf                    
+                        <div class="roboto-hijau" style="font-size:larger"> {{Auth::guard('web')->user()->name}}</div> 
+                        <div class="form-group">
+                            Berikan Rating <input class="form-control mb-2" type="number" name="rate" value="5" min="0" max="5">
+                            Berikan Ulasan <input type="text" class="form-control mb-2 @error('content_review') is-invalid @enderror" placeholder="Berikan Ulasan" name="content_review" spellcheck="false">
+                            @error('content_review')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-primary">Kirim</button>
+                    </form>
+            </div>
+            @else
+            <div></div>
+
+            @endif
         
     </section>
     </div>
+    @endforeach
 
     <script>
         function tambah() {

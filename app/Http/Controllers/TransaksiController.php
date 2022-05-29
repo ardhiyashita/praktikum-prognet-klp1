@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Null_;
 
 class TransaksiController extends Controller
 {
@@ -63,28 +64,53 @@ class TransaksiController extends Controller
 
     public function produkPage($id) 
     {
+
+        $user_id = Auth::guard('web')->user()->id;
+    
+
         $produk = DB::table('products')
             ->join('product_images', 'products.id', '=', 'product_id')
             ->select('products.*', 'product_images.image_name')
             ->where('products.id', '=', $id)
             ->get();
 
-        $product = DB::table('products')        
-            ->select('products.*')
-            ->where('products.id', '=', $id)
-            ->first();
+            // dd($produk);
+
+        $product = Product::find($id)->get();
         
         $product_review = ProductReview::where('product_id', '=', $id)->get();
+        $data_review = DB::table('responses')
+            ->join('product_reviews', 'product_reviews.id', '=', 'review_id')
+            ->select('responses.*', 'product_reviews.product_id')
+            ->where('product_reviews.id', '=', $id)
+            ->get();
+
         $tanggal = Carbon::now('Asia/Makassar')->format('Y-m-d');
 
         $discount = Discount::where('id_product', '=', $id)->where('start', '<=', $tanggal)->where('end', '>=', $tanggal)->get();
 
-        $harga = $product->price;
+        $harga = $produk[0]->price;
         foreach ($discount as $discounts) {
             $harga = $harga - ($harga * $discounts->percentage / 100);
         }
+
+        $cek = DB::table('transactions')
+            ->join('transaction_details', 'transaction_details.transaction_id', '=', 'transactions.id')
+            ->select('transactions.*', 'transaction_details.product_id')
+            ->where('transactions.user_id', '=', $user_id)
+            ->get();
+        
+        // Transaction::where('user_id', '=', $user_id)->where('product_id', '=', $id)->get();
+        // dd($cek);
+        foreach ($cek as $val){
+            // dd($val->product_id == $id and $val->status == 'barang telah sampai di tujuan');
+            if($val->product_id == $id and $val->status == 'barang telah sampai di tujuan'){
+                $rev = 1;                
+                return view('admin.transaksi.produkPage', compact('produk', 'discount', 'harga', 'product_review', 'rev'));
+            }
+        }
+        // dd($cek);
         return view('admin.transaksi.produkPage', compact('produk', 'discount', 'harga', 'product_review'));
-            
         // return view('admin.transaksi.produkPage', compact('produk', 'produk_review'));
 
     }
@@ -99,6 +125,16 @@ class TransaksiController extends Controller
     public function buktiPembayaranPage() 
     {
         return view('admin.transaksi.buktiPembayaranPage');
+    }
+
+    public function terima($id)
+    {
+        $transaction = Transaction::where('id', '=', $id)->get();
+        foreach($transaction as $trans){
+            $trans->status = "barang telah sampai di tujuan";
+            $trans->update();
+        }
+        return redirect()->back();
     }
 
     public function statusTransaksiPage()
@@ -130,53 +166,6 @@ class TransaksiController extends Controller
         return view('admin.transaksi.cartPage');
     }
 
-    public function review_submit($id, Request $request)
-    {
-        $validatedData = $request->validate([
-            'content_review' => 'required'
-        ]);
-
-        $user_id = Auth::guard('web')->user()->id;
-        $review = array(
-            'product_id' => $id,
-            'user_id' => $user_id,
-            'rate' => $request->rate,
-            'content' => $request->content_review
-        );
-
-        product_review::create($review);
-
-        $jumlah_rate = product_review::where('product_id', '=', $id)->get();
-        if (count($jumlah_rate) > 0) {
-            $jumlah = 0;
-            $total = 0;
-            foreach ($jumlah_rate as $jumlah_rates) {
-                $jumlah++;
-                $total = $total + $jumlah_rates->rate;
-            }
-            $product_rate = $total / $jumlah;
-
-            $product = Product::find($id);
-            $product->product_rate = $product_rate;
-            $product->save();
-        }
-        $user = auth::user();
-        $data_user = User::find($user->id);
-        if (count($jumlah_rate) == 1) {
-
-            //----------------------------------------------------------------------------
-            $admin = Admin::find(3);
-            $data = [
-                'nama'=> $user->name,
-                'message'=>'seseorang mereview product!',
-                'id'=> $id,
-                'category' => 'review'
-            ];
-            $data_encode = json_encode($data);
-            $admin->createNotif($data_encode);
-        }
-        return redirect()->back();
-    }
 
     public function keranjang()
     {
@@ -741,112 +730,72 @@ class TransaksiController extends Controller
                 $product->save();
             }
 
-                //notif user--------------------------------------------------------
-                // $user=auth::user();
-                // $user_data=User::find($user->id);
-                // // $admin = Admin::find(6);
-                // $data = [
-                //     'nama'=> 'Admin',
-                //     'message'=>'Transksi expired!',
-                //     'id'=> $transaction_detail_id->id,
-                //     'category' => 'experied'
-                // ];
-                // $data_encode = json_encode($data);
-                // $user_data->createNotifUser($data_encode);
-                //notif user----------------------------------------------------------
-       
             return view('transaksi-detail', compact('transaction', 'transaction_detail'));
         } else if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout >= $tanggal) {            
             $date = Carbon::createFromFormat('Y-m-d H:s:i', $transaction->timeout);
             $interval = $tanggal->diffAsCarbonInterval($date);
-            // dd($interval);
-            // $date = Carbon::createFromFormat('Y-m-d', $transaction->timeout)->toDateTimeString();
-            // dd('ts');
-            // $interval = $tanggal->diffAsCarbonInterval($date);
-          
-            // //notif admin---------------------------------------
-            //  $user=auth::user();
-            //  $user_data=User::find($user->id);
-            //  $admin = Admin::find(3);
-            //  $data = [
-            //     'nama'=> $user->name,
-            //     'message'=>'new Transaction!',
-            //     'id'=> $id,
-            //     'category' => 'transcation'
-            // ];e
-            // $data_encode = json_encode($data);
-            // $admin->createNotif($data_encode);
-            // //notif admin---------------------------------------
-
-            //notif user---------------------------------------
-        //     $user=auth::user();
-        //     $user_data=User::find($user->id);
-        //     $admin = Admin::find(3);
-        //     $data = [
-        //        'nama'=> 'admin',
-        //        'message'=>'Upload Bukti Pembayaran!',
-        //        'id'=> $id,
-        //        'category' => 'proof'
-        //    ];
-        //    $data_encode = json_encode($data);
-        //    $user_data->createNotifUser($data_encode);
-        //    //notif user---------------------------------------
-
+     
             return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail', 'user_id'));
         } else if ($transaction->status == "transaksi tidak terverifikasi" && $transaction->timeout <= $tanggal) {            
             $date = Carbon::createFromFormat('Y-m-d H:s:i', $transaction->timeout);            
             $interval = $tanggal->diffAsCarbonInterval($date);
-            // $date = Carbon::createFromFormat('Y-m-d', $transaction->timeout)->toDateTimeString();
-            // dd('ts');
-            // $interval = $tanggal->diffAsCarbonInterval($date);
-          
-            // //notif admin---------------------------------------
-            //  $user=auth::user();
-            //  $user_data=User::find($user->id);
-            //  $admin = Admin::find(3);
-            //  $data = [
-            //     'nama'=> $user->name,
-            //     'message'=>'new Transaction!',
-            //     'id'=> $id,
-            //     'category' => 'transcation'
-            // ];e
-            // $data_encode = json_encode($data);
-            // $admin->createNotif($data_encode);
-            // //notif admin---------------------------------------
-
-            //notif user---------------------------------------
-        //     $user=auth::user();
-        //     $user_data=User::find($user->id);
-        //     $admin = Admin::find(3);
-        //     $data = [
-        //        'nama'=> 'admin',
-        //        'message'=>'Upload Bukti Pembayaran!',
-        //        'id'=> $id,
-        //        'category' => 'proof'
-        //    ];
-        //    $data_encode = json_encode($data);
-        //    $user_data->createNotifUser($data_encode);
-        //    //notif user---------------------------------------
-
+            
             return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail', 'user_id'));
+        }else if ($transaction->status == "barang telah sampai di tujuan") {            
+            
+            return view('transaksi-detail', compact('transaction', 'transaction_detail', 'user_id'));
         }else {            
-
-            //notif user---------------------------------------
-            // $user=auth::user();
-        //     $user_data=User::find($user->id);
-        //     //$admin = Admin::find(3);
-        //     $data = [
-        //        'nama'=> 'admin',
-        //        'message'=>$transaction->status,
-        //        'id'=> $id,
-        //        'category' => 'transcation'
-        //    ];
-        //    $data_encode = json_encode($data);
-        //    $user_data->createNotifUser($data_encode);
-        //    notif user---------------------------------------
 
             return view('transaksi-detail', compact('transaction', 'transaction_detail'));
         }
+    }
+
+    public function review_submit($id, Request $request)
+    {
+        $validatedData = $request->validate([
+            'content_review' => 'required'
+        ]);
+
+        $user_id = Auth::guard('web')->user()->id;
+        $review = array(
+            'product_id' => $id,
+            'user_id' => $user_id,
+            'rate' => $request->rate,
+            'content' => $request->content_review
+        );
+
+        ProductReview::create($review);
+
+        $jumlah_rate = ProductReview::where('product_id', '=', $id)->get();
+        if (count($jumlah_rate) > 0) {
+            $jumlah = 0;
+            $total = 0;
+            foreach ($jumlah_rate as $jumlah_rates) {
+                $jumlah++;
+                $total = $total + $jumlah_rates->rate;
+            }
+            $product_rate = $total / $jumlah;
+
+            $product = Product::find($id);
+            $product->product_rate = $product_rate;
+            $product->save();
+        }
+        $user = auth::user();
+        $data_user = User::find($user->id);
+        if (count($jumlah_rate) == 1) {
+
+            //----------------------------------------------------------------------------
+            $admin = Admin::find(3);
+            $data = [
+                'nama'=> $user->name,
+                'message'=>'seseorang mereview product!',
+                'id'=> $id,
+                'category' => 'review'
+            ];
+            // $data_encode = json_encode($data);
+            // $admin->createNotif($data_encode);
+        }
+        return redirect()->back();
     }
 
     public function transaksi_bukti($id, Request $request)
@@ -925,39 +874,6 @@ class TransaksiController extends Controller
             $product->stock = $product->stock + $transaction_details->qty;
             $product->save();
         }
-
-        // $user = User::where('active', '=', '1')->first();
-        // $user_id = $user->id;
-
-    //     //notif admin---------------------------------------
-    //     $user=auth::user();
-    //     //$user_data=User::find($user->id);
-    //     $admin = Admin::find(3);
-    //     $data = [
-    //        'nama'=> $user->name,
-    //        'message'=>'Transaksi Dibatalkan!',
-    //        'id'=> $id,
-    //        'category' => 'canceled'
-    //    ];
-    //    $data_encode = json_encode($data);
-    //    $admin->createNotif($data_encode);
-    //    //notif admin---------------------------------------
-
-    //     //notif user---------------------------------------
-    //     $user=auth::user();
-    //     $user_data=User::find($user->id);
-    //     $admin = Admin::find(3);
-    //     $data = [
-    //        'nama'=> 'Admin',
-    //        'message'=>'Transaksi Berhasil Dibatalkan!',
-    //        'id'=> $id,
-    //        'category' => 'canceled'
-    //    ];
-    //    $data_encode = json_encode($data);
-    //    $user_data->createNotifUser($data_encode);
-    //    //notif user---------------------------------------
-    
-        // return redirect()->route('transaksi-detail', $id)->compact('user_id');
         return redirect()->back();
     }
 

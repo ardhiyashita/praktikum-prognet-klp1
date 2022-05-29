@@ -89,7 +89,6 @@
                                     <option value="transaksi tidak terverifikasi">Transaksi Tidak Terverifikasi</option>
                                     <option value="transaksi dibatalkan">Transaksi Dibatalkan</option>
                                     <option value="barang dalam pengiriman">Barang Dalam Pengiriman</option>
-                                    <option value="barang telah sampai di tujuan">Barang Telah Sampai Di Tujuan</option>
                                 </select>
                             </div>
                             <br><br>

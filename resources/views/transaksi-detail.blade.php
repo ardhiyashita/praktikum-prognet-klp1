@@ -100,6 +100,71 @@
                                 <button type="submit" class="btn btn-danger">Batal</button>
                             </div>
                         </form>
+
+                        @elseif($transaction->status == "barang telah sampai di tujuan")
+                            <div class="row">
+                                <div class="progress-container mb-3">
+                                    <a href="{{route('terima', $transaction_details->transaction_id)}}" class="btn btn-success mt-2" style="width: 100%;">
+                                        Tandai sebagai Barang Telah Diterima
+                                    </a>
+                                </div>
+                            </div>
+
+                            @foreach($transaction_detail as $transaction_details)
+                            <div class="white-line mb-4"></div>
+
+                            <div class="row">
+                                <div class="col-5">
+                                    <h6 class="card-subtitle mb-2 text-muted">Nama Barang</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Harga Barang</h6>
+                                </div>
+                                <div class="col-7">
+                                    <div class="form-inline">
+                                        <h6 class="card-subtitle mb-2 text-muted">{{$transaction_details->product->product_name}}</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{$transaction_details->selling_price}}</h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                    <div class="progress-container mb-3">
+                                        <a href="{{ route('produk-page', $transaction_details->product_id) }}" class="btn btn-info" style="width: 100%;" readonly>Berikan Ulasan</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                            
+                        @elseif($transaction->status == "barang dalam pengiriman")
+                            <div class="row">
+                                <div class="progress-container mb-3">
+                                    <a href="{{route('terima', $transaction_details->transaction_id)}}" class="btn btn-success mt-2" style="width: 100%;">
+                                        Tandai sebagai Barang Telah Diterima
+                                    </a>
+                                </div>
+                            </div>
+
+                            @foreach($transaction_detail as $transaction_details)
+                            <div class="white-line mb-4"></div>
+
+                            <div class="row">
+                                <div class="col-5">
+                                    <h6 class="card-subtitle mb-2 text-muted">Nama Barang</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Harga Barang</h6>
+                                </div>
+                                <div class="col-7">
+                                    <div class="form-inline">
+                                        <h6 class="card-subtitle mb-2 text-muted">{{$transaction_details->product->product_name}}</h6>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{$transaction_details->selling_price}}</h6>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                    <div class="progress-container mb-3">
+                                        <a href="{{ route('produk-page', $transaction_details->product_id) }}" class="btn btn-info" style="width: 100%;" readonly>Berikan Ulasan</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                            
                         @endif
                         @endauth
 

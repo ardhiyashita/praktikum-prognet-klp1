@@ -54,6 +54,7 @@ Route::middleware(['auth:web'])->group(function(){
         Route::get('/transaksi-page', [TransaksiController::class, 'transaksiPage'])->name('transaksi-page');
         Route::get('/bukti-pembayaran-page', [TransaksiController::class, 'buktiPembayaranPage'])->name('bukti-pembayaran-page');
         Route::get('/status-transaksi-page', [TransaksiController::class, 'statusTransaksiPage'])->name('status-transaksi-page');
+        Route::get('/terima/{id}', [TransaksiController::class, 'terima'])->name('terima');
 
         // Route::get('/cart-page', [CartController::class, 'cartPage'])->name('cart-page');
         // Route::post('/cart-insert', [CartController::class, 'cartInsert'])->name('cart-insert');
@@ -127,6 +128,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
 
             Route::get('/adm/produkPage/{id}', [AdmTransaksiController::class, 'produkPage'])->name('adm-produk-page');
 
+            Route::get('/adm/review', [AdmTransaksiController::class, 'review'])->name('adm-review');
             Route::post('/adm/response/submit/{id}', [AdmTransaksiController::class, 'response_submit'])->name('adm-response-submit');
             Route::get('/adm/response/submit', [AdmTransaksiController::class, 'response_submit_notif'])->name('adm-response-submit-notif');
             Route::get('/adm/transaksi', [AdmTransaksiController::class, 'transaksi'])->name('adm-transaksi');

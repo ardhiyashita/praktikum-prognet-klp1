@@ -120,6 +120,7 @@ class ProdukController extends Controller
     public function delete($id)
     {
         DB::table('products')->where('id', $id)->delete();
+        DB::table('discounts')->where('id_product', $id)->delete();
         return redirect('admin/produk');
     }
 
