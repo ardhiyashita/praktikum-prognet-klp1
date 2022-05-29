@@ -1,11 +1,10 @@
-@extends('layouts.navigation')
+@extends('produk.mainProduk')
 
-@section('title', 'Produk Page')
+@section('title', 'Courier Page')
 
 @section('content')
 <!-- <div class="dark"> -->
-    <div class="content">
-        <div class="row">
+    
             <div class="card">
                     <div class="card-header">
                         <div class="pull-left">
@@ -66,6 +65,5 @@
           </div>
             </div>
           </div>
-        </div>
-    </div>
+        
     @endsection

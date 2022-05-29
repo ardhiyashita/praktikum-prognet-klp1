@@ -10,11 +10,11 @@ class CourierController extends Controller
 {
     public function index(){
         $kurir = Courier::latest()->paginate(5);
-        return view('admin.transaksi.courier', compact('kurir'));
+        return view('produk.courier', compact('kurir'));
     }
 
     public function add(){
-        return view('admin.transaksi.courierAdd');
+        return view('produk.courierAdd');
     }
 
     public function create(Request $request){
@@ -32,7 +32,7 @@ class CourierController extends Controller
     public function edit($id)
     {
         $courier = DB::table('couriers')->where('id', $id)->first();
-        return view('admin.transaksi.courierEdit', compact('courier'));
+        return view('produk.courierEdit', compact('courier'));
     }
 
     public function editprocess(Request $request, $id){
