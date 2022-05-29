@@ -89,36 +89,28 @@
                                     </div>
                                 </form>
                             </div>
-<<<<<<< HEAD
                         </li>
+                        
                         <!-- Notifikasi -->
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                            <li class="nav-item dropdown">
-                            <a class="fa fa-bell nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                @foreach (Auth::guard('web')->user()->notifications as $notification)
-                                    <li><a class="dropdown-item" href="#">{{$notification->data['message']}}</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="fa fa-bell nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @foreach (Auth::guard('admin')->user()->unreadNotifications as $notification)
+                                    <li><a class="dropdown-item" href="{{ url('adminreadnotification') }}/{{ $notification->id }}" data-id="{{$notification->id}}">{{$notification->data['message']}}</li></a>
                                 @endforeach
-                            </ul>
-                            </li>
-                            </ul>
+                                <!-- <li><a id="mark-all" class="dropdown-item" href="#">Mark all as read</a></li> -->
+                                </ul>
+                        </li>
                         </div>
-=======
-                        </li>                        
 
->>>>>>> be13cf444459832b86d3d754d734d3895e10a68d
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-<<<<<<< HEAD
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">ANJIGGGGGGe</span>
-=======
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::guard('admin')->user()->name}}</span>
->>>>>>> be13cf444459832b86d3d754d734d3895e10a68d
                                 <img class="img-profile rounded-circle"
                                     src=" {{ asset('assets/img2/undraw_profile.svg') }}">
                             </a>
@@ -177,7 +169,6 @@
 
     <!-- Bootstrap core JavaScript-->
     <script src=" {{ asset('assets/vendor2/jquery/jquery.min.js') }}"></script>
-    <script src=" {{ asset('assets/vendor2/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Core plugin JavaScript-->
     <script src=" {{ asset('assets/vendor2/jquery-easing/jquery.easing.min.js') }}"></script>
@@ -191,7 +182,17 @@
 
     <!-- Page level custom scripts -->
     <script src=" {{ asset('assets/js2/demo/datatables-demo.js') }}"></script>
-
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+    <script src="{{ asset('assets/js/scripts.js') }}"></script>
+    <script src="{{ asset('assets/js/cart.js') }}"></script>
+    <script src="{{ asset('assets/shop/js/scripts.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('dropdown-toggle').dropdown()
+        });
+    </script>
 </body>
 
 </html>

@@ -37,15 +37,4 @@ class HomeController extends Controller
         return view('user.landingPage', compact('produk'));
     }
     
-    public function markNotification(Request $request)
-    {
-        Auth::guard('web')->user()
-            ->unreadNotifications
-            ->when($request->input('id'), function ($query) use ($request) {
-                return $query->where('id', $request->input('id'));
-            })
-            ->markAsRead();
-
-        return response()->noContent();
-    }
 }

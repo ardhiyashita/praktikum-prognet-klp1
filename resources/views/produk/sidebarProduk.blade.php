@@ -44,6 +44,11 @@
         <span>Review</span></a>
 </li>
 <li class="nav-item">
+    <a class="nav-link" href="{{  url('/admin/laporan') }}">
+        <i class="fas fa-fw fa-tachometer-alt"></i>
+        <span>Report Transaksi</span></a>
+</li>
+<li class="nav-item">
     <a class="nav-link" href="{{  url('admin/logout') }}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>Log Out</span></a>

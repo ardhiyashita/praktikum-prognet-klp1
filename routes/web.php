@@ -13,6 +13,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ReportController;
 // use App\Http\Controllers\User;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DiskonController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
@@ -48,8 +49,10 @@ Route::middleware(['guest:web'])->group(function(){
 Route::middleware(['auth:web'])->group(function(){
     // ROUTE YANG BISA DIAKSES SEMUA USER LOGIN - UDAH VERIFY ATAUPUN BELUM EMAILNYA
     Route::get('home',[HomeController::class, 'index'])->name('home');
-    Route::post('/mark-as-read', [HomeController::class, 'markNotification'])->name('markNotification');
     //Notifikasi
+    Route::get('userreadnotification/{id}', [NotificationController::class, 'userReadNotification'])->name('userReadNotification');
+    Route::get('adminreadnotification/{id}', [NotificationController::class, 'adminReadNotification'])->name('adminReadNotification');
+
     Route::get('/', [TransaksiController::class, 'landingPage'])->name('landing-page-user');
     Route::get('/{id}/produk-page', [TransaksiController::class, 'produkPage'])->name('produk-page');
     Route::middleware('email')->group(function(){

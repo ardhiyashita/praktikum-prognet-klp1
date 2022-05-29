@@ -34,18 +34,15 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('landing-page-user') }}">Home</a></li>
                     <li class="nav-item dropdown">
-<<<<<<< HEAD
                             <a class="fa fa-bell nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
-=======
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Notification</a>
->>>>>>> be13cf444459832b86d3d754d734d3895e10a68d
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 @foreach (Auth::guard('web')->user()->unreadNotifications as $notification)
-                                    <li><a class="dropdown-item" href="#">{{$notification->data['message']}}</a></li>
+                                    <li><a class="dropdown-item" href="{{ url('userreadnotification') }}/{{ $notification->id }}" data-id="{{$notification->id}}">{{$notification->data['message']}}</a></li>
                                 @endforeach
-                                <li><a id="mark-all" class="dropdown-item" href="#">Mark all as read</a></li>
+                                <!-- <li><a id="mark-all" class="dropdown-item" href="#">Mark all as read</a></li> -->
                             </ul>
                         </li>
+                </div>
                         @if(!Auth::guard('web')->user()->email_verified_at)
 {{-- <div class="container">
     <div class="row justify-content-center">
@@ -136,30 +133,5 @@
         </script>
         @include('sweetalert::alert')
         </div>
-            <script>
-            function sendMarkRequest(id = null) {
-                return $.ajax("/mark-as-read", {
-                    method: 'POST',
-                    data: {
-                        _token,
-                        id
-                    }
-                });
-            }
-            $(function() {
-                // $('.mark-as-read').click(function() {
-                //     let request = sendMarkRequest($(this).data('id'));
-                //     request.done(() => {
-                //         $(this).parents('div.alert').remove();
-                //     });
-                // });
-                $('#mark-all').click(function() {
-                    let request = sendMarkRequest();
-                    request.done(() => {
-                        $('div.alert').remove();
-                    })
-                });
-            });
-            </script>
     </body>
 </html>
