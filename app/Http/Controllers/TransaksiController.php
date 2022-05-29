@@ -18,10 +18,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\AdminNotification;
+use App\Notifications\UserNotification;
 
 class TransaksiController extends Controller
 {
     //
+    use Notifiable;
     public function landing()
     {
         $produk = DB::table('products')
@@ -165,15 +169,17 @@ class TransaksiController extends Controller
         if (count($jumlah_rate) == 1) {
 
             //----------------------------------------------------------------------------
-            $admin = Admin::find(3);
-            $data = [
-                'nama'=> $user->name,
-                'message'=>'seseorang mereview product!',
-                'id'=> $id,
-                'category' => 'review'
-            ];
-            $data_encode = json_encode($data);
-            $admin->createNotif($data_encode);
+            // $admin = Admin::find(3);
+            // $data = [
+            //     'nama'=> $user->name,
+            //     'message'=>'seseorang mereview product!',
+            //     'id'=> $id,
+            //     'category' => 'review'
+            // ];
+            // $data_encode = json_encode($data);
+            // $admin->createNotif($data_encode);
+            $admin = Admin::find(2);
+            $admin->notify(new AdminNotification("Seseorang mereview product!"));
         }
         return redirect()->back();
     }
@@ -452,7 +458,7 @@ class TransaksiController extends Controller
         // //----------------------------------------------------------------------------
         // $user=Auth::user();
         // $data_user=User::find($user->id);
-        // $admin = Admin::find(3);
+        // $admin = Admin::find(2);
         // $data = [
         //     'nama'=> $user->name,
         //     'message'=>'membeli product!',
@@ -460,6 +466,7 @@ class TransaksiController extends Controller
         //     'category' => 'transaction'
         // ];
         // $data_encode = json_encode($data);
+        // $admin->notify(new AdminNotification($data_encode));
         // $admin->createNotif($data_encode);
         // //Notif User-------------------------------------------------------------------
         // $data = [
@@ -471,7 +478,12 @@ class TransaksiController extends Controller
         // $data_encode = json_encode($data);
         // $data_user->createNotifUser($data_encode);
         // //Notif User-------------------------------------------------------------------
-        
+        $admin_id = Admin::find(2);
+        $user=Auth::guard('web')->user();
+        $user_id=User::find($user->id);
+        $admin_id->notify(new AdminNotification('Ada order baru'));
+        $user_id->notify(new UserNotification('Order sudah masuk'));
+
         return redirect()->route('transaksi-detail', $transaction->id);
     }
 
@@ -665,10 +677,16 @@ class TransaksiController extends Controller
         //  $data_encode = json_encode($data);
         //  $data_user->createNotifUser($data_encode);
         //  //Notif User-------------------------------------------------------------------
-
-       
+        // $user_id = Auth::guard('web')->user()->id;
+        // $user_id->notify(new UserNotification('Order sudah terkirim'));
         
         //$transaction_detail = TransactionDetail::where('transaction_id', '=', $transaction->id)->latest()->first();
+        $admin_id = Admin::find(2);
+        $user=Auth::guard('web')->user();
+        $user_id=User::find($user->id);
+        $admin_id->notify(new AdminNotification('Ada order baru'));
+        $user_id->notify(new UserNotification('Order sudah masuk'));
+
         return redirect()->route('transaksi-detail',$transaction->id);
     }
 
@@ -705,6 +723,11 @@ class TransaksiController extends Controller
                 // $data_encode = json_encode($data);
                 // $user_data->createNotifUser($data_encode);
                 //--------------------------------------------------------
+                $admin_id = Admin::find(2);
+                // $user=Auth::guard('web')->user();
+                // $user_id=User::find($user->id);
+                $admin_id->notify(new AdminNotification('Ada order expired'));
+                // $user_id->notify(new UserNotification('Order sudah masuk'));
             }
             $date = Carbon::createFromFormat('Y-m-d H:s:i', $transactions->timeout);
             $countdown = $tanggal->diffAsCarbonInterval($date);
@@ -754,6 +777,11 @@ class TransaksiController extends Controller
                 // $data_encode = json_encode($data);
                 // $user_data->createNotifUser($data_encode);
                 //notif user----------------------------------------------------------
+                // $admin_id = Admin::find(2);
+                $user=Auth::guard('web')->user();
+                $user_id=User::find($user->id);
+                // $admin_id->notify(new AdminNotification('Ada order baru'));
+                $user_id->notify(new UserNotification('Transaksi expired'));
        
             return view('transaksi-detail', compact('transaction', 'transaction_detail'));
         } else if ($transaction->status == "menunggu bukti pembayaran" && $transaction->timeout >= $tanggal) {            
@@ -791,6 +819,11 @@ class TransaksiController extends Controller
         //    $data_encode = json_encode($data);
         //    $user_data->createNotifUser($data_encode);
         //    //notif user---------------------------------------
+                $admin_id = Admin::find(2);
+                $user=Auth::guard('web')->user();
+                $user_id=User::find($user->id);
+                $admin_id->notify(new AdminNotification('New transaction!'));
+                $user_id->notify(new UserNotification('Upload bukti pembayaran!'));
 
             return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail', 'user_id'));
         } else if ($transaction->status == "transaksi tidak terverifikasi" && $transaction->timeout <= $tanggal) {            
@@ -828,6 +861,13 @@ class TransaksiController extends Controller
         //    $user_data->createNotifUser($data_encode);
         //    //notif user---------------------------------------
 
+            $admin_id = Admin::find(2);
+            $user=Auth::guard('web')->user();
+            $user_id=User::find($user->id);
+            $admin_id->notify(new AdminNotification('New transaction!'));
+            $user_id->notify(new UserNotification('Upload bukti pembayaran baru!'));
+
+
             return view('transaksi-detail', compact('transaction', 'interval', 'transaction_detail', 'user_id'));
         }else {            
 
@@ -844,6 +884,9 @@ class TransaksiController extends Controller
         //    $data_encode = json_encode($data);
         //    $user_data->createNotifUser($data_encode);
         //    notif user---------------------------------------
+            $user=Auth::guard('web')->user();
+            $user_id=User::find($user->id);
+            $user_id->notify(new UserNotification('{{$transaction->status}}'));
 
             return view('transaksi-detail', compact('transaction', 'transaction_detail'));
         }
@@ -883,7 +926,13 @@ class TransaksiController extends Controller
         //    $data_encode = json_encode($data);
         //    $data_user->createNotifUser($data_encode);
            //notif user---------------------------------------
-           return redirect()->back();
+            // $admin_id = Admin::find(2);
+            $user=Auth::guard('web')->user();
+            $user_id=User::find($user->id);
+            // $admin_id->notify(new AdminNotification('Ada order baru'));
+            $user_id->notify(new UserNotification('Transaksi expired!'));
+
+            return redirect()->back();
 
         }
 
@@ -893,6 +942,10 @@ class TransaksiController extends Controller
         $transaction->proof_of_payment = $image_name;
         $transaction->status = "menunggu verifikasi";
         $transaction->save();
+
+        $user=Auth::guard('web')->user();
+        $user_id = User::find($user->id);
+        $user_id->notify(new UserNotification("Bukti sudah terkirim"));
 
         //  //notif admin---------------------------------------
         //  $user=auth::user();
@@ -907,6 +960,11 @@ class TransaksiController extends Controller
         // $data_encode = json_encode($data);
         // $admin->createNotif($data_encode);
         // //notif admin---------------------------------------
+        $admin_id = Admin::find(2);
+        // $user=Auth::guard('web')->user();
+        // $user_id=User::find($user->id);
+        $admin_id->notify(new AdminNotification('Verifikasi pembayaran baru!'));
+        // $user_id->notify(new UserNotification('Order sudah masuk'));
 
         $image->move(public_path('proof_of_payment'), $image_name);
 
@@ -956,10 +1014,13 @@ class TransaksiController extends Controller
     //    $data_encode = json_encode($data);
     //    $user_data->createNotifUser($data_encode);
     //    //notif user---------------------------------------
+        $admin_id = Admin::find(2);
+        $user=Auth::guard('web')->user();
+        $user_id=User::find($user->id);
+        $admin_id->notify(new AdminNotification('Transaksi dibatalkan!'));
+        $user_id->notify(new UserNotification('Order berhasil dibatalkan'));
     
         // return redirect()->route('transaksi-detail', $id)->compact('user_id');
         return redirect()->back();
     }
-
-
 }

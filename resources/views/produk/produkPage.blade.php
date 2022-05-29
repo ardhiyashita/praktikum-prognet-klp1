@@ -61,6 +61,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                
                 <div class="mt-4 text-center">
                         Showing 
                         {{ $produk->firstItem() }}

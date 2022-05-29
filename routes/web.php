@@ -11,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CourierController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\ReportController;
 // use App\Http\Controllers\User;
 use App\Http\Controllers\DiskonController;
 use App\Models\Product;
@@ -47,6 +48,8 @@ Route::middleware(['guest:web'])->group(function(){
 Route::middleware(['auth:web'])->group(function(){
     // ROUTE YANG BISA DIAKSES SEMUA USER LOGIN - UDAH VERIFY ATAUPUN BELUM EMAILNYA
     Route::get('home',[HomeController::class, 'index'])->name('home');
+    Route::post('/mark-as-read', [HomeController::class, 'markNotification'])->name('markNotification');
+    //Notifikasi
     Route::get('/', [TransaksiController::class, 'landingPage'])->name('landing-page-user');
     Route::get('/{id}/produk-page', [TransaksiController::class, 'produkPage'])->name('produk-page');
     Route::middleware('email')->group(function(){
@@ -93,6 +96,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
             // Route::get('home',[Admin::class, 'index'])->name('home');
             // Route::view('home','admin.home')->name('home');
             Route::get('/home', [ProdukController::class, 'index'])->name('home');
+            Route::get('laporan', [ReportController::class, 'index'])->name('report');
             Route::get('/logout',[Admin::class,'logout'])->name('logout');
             // route::get('toko',[Toko::class,'toko'])->name('home');
             Route::get('/', [TransaksiController::class, 'landingPage'])->name('landing-page-user');

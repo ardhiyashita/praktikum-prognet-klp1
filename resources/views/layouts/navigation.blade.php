@@ -11,20 +11,20 @@
         -->
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{ asset('assets/css/styles.css') }}" rel="stylesheet" />
         <link href="{{ asset('assets/css/projekStyle.css') }}" rel="stylesheet" />
+        <link href="{{ asset('assets/shop/css/styles2.css') }}" rel="stylesheet" />
+        <script src="jquery/jquery.js"></script>
+        <script type="text/javascript" src='js/bootstrap.min.js'></script>
+        <link rel="stylesheet" href="css/bootstrap.css" />
         @yield('css')
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous" defer>
-      </script>
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-      <script src="scripts/config.js" defer></script>
-
+    
     </head>
-    <body><!-- Navigation-->
+    <body>
+        <!-- Navigation-->
         <div class="wrapper ">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
@@ -33,14 +33,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('landing-page-user') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <li class="nav-item dropdown">
+                            <a class="fa fa-bell nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#!">All Products</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                                <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                                @foreach (Auth::guard('web')->user()->unreadNotifications as $notification)
+                                    <li><a class="dropdown-item" href="#">{{$notification->data['message']}}</a></li>
+                                @endforeach
+                                <li><a id="mark-all" class="dropdown-item" href="#">Mark all as read</a></li>
                             </ul>
                         </li>
                         @if(!Auth::guard('web')->user()->email_verified_at)
@@ -114,7 +113,38 @@
         <!-- Core theme JS-->
         <script src="{{ asset('assets/js/scripts.js') }}"></script>
         <script src="{{ asset('assets/js/cart.js') }}"></script>
+        <script src="{{ asset('assets/shop/js/scripts.js') }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('dropdown-toggle').dropdown()
+            });
+        </script>
         @include('sweetalert::alert')
         </div>
+            <script>
+            function sendMarkRequest(id = null) {
+                return $.ajax("/mark-as-read", {
+                    method: 'POST',
+                    data: {
+                        _token,
+                        id
+                    }
+                });
+            }
+            $(function() {
+                // $('.mark-as-read').click(function() {
+                //     let request = sendMarkRequest($(this).data('id'));
+                //     request.done(() => {
+                //         $(this).parents('div.alert').remove();
+                //     });
+                // });
+                $('#mark-all').click(function() {
+                    let request = sendMarkRequest();
+                    request.done(() => {
+                        $('div.alert').remove();
+                    })
+                });
+            });
+            </script>
     </body>
 </html>

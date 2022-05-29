@@ -29,7 +29,7 @@ class ProdukController extends Controller
     public function index(){
         //$produk = Product::latest()->paginate(5);
         $produk= DB::Table('products')->join('product_categories','products.id_category','=','product_categories.id')
-        ->select('products.*','product_categories.category_name')->orderBy('products.created_at')->paginate(5);        
+        ->select('products.*','product_categories.category_name')->orderBy('products.created_at')->paginate(5);
         return view('produk.produkPage', compact('produk'));
         // return view('admin.transaksi.produkPage', compact('produk'));
     }
@@ -122,6 +122,5 @@ class ProdukController extends Controller
         DB::table('products')->where('id', $id)->delete();
         return redirect('admin/produk');
     }
-
-
+    
 }
