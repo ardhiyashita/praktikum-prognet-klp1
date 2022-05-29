@@ -143,7 +143,7 @@ Route::prefix('admin')->name('admin.')->group(function(){
             Route::get('/diskon-add', [DiskonController::class, 'add']);
             Route::post('/diskon', [DiskonController::class, 'create']);
             Route::get('/diskon/edit/{id}', [DiskonController::class, 'edit']);
-            Route::post('/diskon/{id}', [DiskonController::class, 'editprocess']);
+            Route::patch('/diskon/{id}', [DiskonController::class, 'editprocess']);
             Route::delete('/diskon/{id}', [DiskonController::class, 'delete']);
 
         });
