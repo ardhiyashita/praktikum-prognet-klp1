@@ -20,7 +20,7 @@
                         <tr>
                         <th>No</th>
                         <th>Nama Produk</th>
-                        <th>Presentasi Diskon</th>
+                        <th>Presentase Diskon</th>
                         <th>Mulai</th>
                         <th>Berakhir</th>
                         <th class="text-center">Action</th>

@@ -65,6 +65,15 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                   
+                                    <div class="form-group">
+                                        <label  class="mt-2">Image</label>
+                                        <input type="file" name="foto" class="form-control mt-1 @error('foto') is-invalid @enderror"  >
+                                        @error('image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                      <div class="form-group">
                                         <label  class="mt-2">Deskripsi</label>
                                         <input type="text" name="description" class="form-control mt-1 @error('description') is-invalid @enderror" value="{{ old('description', $produk->description) }}" >
